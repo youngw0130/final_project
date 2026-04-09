@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>크레딧-N | 정산 리포트</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="py-8">
+
+<!-- ══════════════════════════════════════════════
+     PHONE FRAME
+══════════════════════════════════════════════ -->
+<div class="mx-auto relative overflow-x-hidden"
+     style="width:390px; min-height:844px; background:#F0F4FF; font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;">
+
+  <!-- ═══════ HERO HEADER ═══════ -->
+  <div class="detail-header relative overflow-hidden" style="padding-bottom:48px;">
+
+    <!-- Confetti -->
+    <div class="conf conf-a1" style="left:10%;  top:20%; width:8px;  height:8px;  background:#93C5FD;"></div>
+    <div class="conf conf-b1" style="left:25%;  top:10%; width:6px;  height:10px; background:#4ADE80; border-radius:50%;"></div>
+    <div class="conf conf-c1" style="left:50%;  top:15%; width:9px;  height:6px;  background:#FCD34D;"></div>
+    <div class="conf conf-a2" style="left:68%;  top:8%;  width:7px;  height:7px;  background:#F9A8D4; border-radius:50%;"></div>
+    <div class="conf conf-b2" style="left:82%;  top:18%; width:6px;  height:9px;  background:#86EFAC;"></div>
+    <div class="conf conf-c2" style="left:40%;  top:5%;  width:8px;  height:8px;  background:#FCA5A5; border-radius:50%;"></div>
+
+    <!-- Status bar -->
+    <div class="flex items-center justify-between px-6 pt-3 pb-1 relative z-10">
+      <span class="text-xs font-semibold text-white opacity-75">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <rect x="0"    y="6" width="3" height="6"  rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="4.5"  y="4" width="3" height="8"  rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="9"    y="2" width="3" height="10" rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" fill-opacity=".75"/>
+        </svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 9.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z" fill="white" fill-opacity=".75"/>
+          <path d="M4.5 6.8A4.97 4.97 0 018 5.5c1.38 0 2.63.56 3.5 1.3"   stroke="white" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M1.5 3.8A8.97 8.97 0 018 1.5c2.48 0 4.73 1 6.36 2.63"  stroke="white" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <div class="w-6 h-3 rounded-sm p-px flex" style="border:1px solid rgba(255,255,255,.6);">
+          <div class="flex-1 rounded-sm" style="background:rgba(255,255,255,.7);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav row -->
+    <div class="flex items-center justify-between px-5 py-3 relative z-10">
+      <a href="escrow-detail.html"
+         class="w-10 h-10 rounded-2xl flex items-center justify-center"
+         style="background:rgba(255,255,255,.15);">
+        <i data-lucide="arrow-left" style="width:20px;height:20px;color:white;stroke-width:2.5;"></i>
+      </a>
+      <span class="text-white font-bold text-base">정산 리포트</span>
+      <button class="w-10 h-10 rounded-2xl flex items-center justify-center"
+              style="background:rgba(255,255,255,.15);">
+        <i data-lucide="share-2" style="width:18px;height:18px;color:white;"></i>
+      </button>
+    </div>
+
+    <!-- Check circle + success message -->
+    <div class="flex flex-col items-center relative z-10 pt-2 pb-2">
+
+      <!-- Animated check -->
+      <div class="check-pop-anim w-20 h-20 rounded-full flex items-center justify-center mb-4"
+           style="background:rgba(255,255,255,.2);box-shadow:0 0 0 12px rgba(255,255,255,.08), 0 0 0 24px rgba(255,255,255,.04);">
+        <i data-lucide="check" style="width:44px;height:44px;color:white;stroke-width:3;"></i>
+      </div>
+
+      <h1 class="text-white font-extrabold text-2xl mb-1 tracking-tight">정산 완료! 🎉</h1>
+      <p class="text-blue-200 text-sm font-medium">모든 정산이 완료됐어요</p>
+      <div class="flex items-center gap-1.5 mt-2">
+        <i data-lucide="clock" style="width:12px;height:12px;color:rgba(147,197,253,.8);"></i>
+        <span class="text-xs" style="color:rgba(147,197,253,.8);">2025.03.17 21:43:27 처리완료</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ RECEIPT CARD ═══════ -->
+  <div class="px-4 mt-4 relative z-10">
+    <div class="rounded-3xl shadow-xl overflow-hidden">
+
+      <!-- Perforated top edge -->
+      <div class="receipt-tear-top"></div>
+
+      <!-- Receipt body -->
+      <div class="relative px-6 pb-6" style="background:#FAF9F7;">
+
+        <!-- Brand header -->
+        <div class="flex items-center justify-between py-4">
+          <div>
+            <p class="font-extrabold tracking-widest text-xs" style="color:#B0ACA4;letter-spacing:.16em;">CREDIT-N</p>
+            <p class="text-xs mt-0.5" style="color:#C4C0B8;">에스크로 정산 영수증</p>
+          </div>
+          <div class="text-right">
+            <p class="text-xs" style="color:#C4C0B8;">영수증 번호</p>
+            <p class="font-mono text-xs font-semibold mt-0.5" style="color:#9C9890;">CN-20250317-8472</p>
+          </div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Meeting name -->
+        <div class="py-3.5 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
+               style="background:#F0EDE8;">🥩</div>
+          <div>
+            <p class="font-bold text-sm" style="color:#2D2A25;">강남역 삼겹살 모임</p>
+            <p class="text-xs mt-0.5" style="color:#A09C94;">2025.03.15 ~ 2025.03.17 · 5명 참여</p>
+          </div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Expense breakdown -->
+        <div class="py-4 space-y-2.5">
+          <p class="text-xs font-bold tracking-wide mb-3" style="color:#A09C94;letter-spacing:.06em;">지출 내역</p>
+          <div class="flex justify-between items-center">
+            <span class="text-sm" style="color:#6B6760;">총 지출액 (QR 결제 합산)</span>
+            <span class="text-sm font-semibold" style="color:#2D2A25;">237,500원</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm" style="color:#6B6760;">참여 인원</span>
+            <span class="text-sm font-semibold" style="color:#2D2A25;">5명</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm" style="color:#6B6760;">1인 분담금</span>
+              <span class="text-xs px-1.5 py-0.5 rounded-full font-semibold"
+                    style="background:#EEF2FF;color:#4F46E5;">÷5</span>
+            </div>
+            <span class="text-sm font-semibold" style="color:#2D2A25;">47,500원</span>
+          </div>
+        </div>
+
+        <div class="receipt-divider-bold"></div>
+
+        <!-- Settlement calculation -->
+        <div class="py-4 space-y-2.5">
+          <p class="text-xs font-bold tracking-wide mb-3" style="color:#A09C94;letter-spacing:.06em;">정산 계산</p>
+          <div class="flex justify-between items-center">
+            <span class="text-sm" style="color:#6B6760;">내 예치금</span>
+            <span class="text-sm font-semibold" style="color:#2D2A25;">60,000원</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm" style="color:#6B6760;">내 분담금</span>
+            <span class="text-sm font-semibold" style="color:#C0392B;">−47,500원</span>
+          </div>
+        </div>
+
+        <div class="receipt-divider-bold" style="border-top-color:#A09C94;"></div>
+
+        <!-- ── REFUND HERO ── -->
+        <div class="refund-pop py-6 text-center">
+          <p class="text-xs font-semibold mb-3" style="color:#A09C94;letter-spacing:.04em;">최종 환급액 · 내 계좌로 입금</p>
+
+          <div class="flex items-end justify-center gap-1.5 mb-2">
+            <span id="refundAmount"
+                  class="font-extrabold leading-none"
+                  style="font-size:48px;color:#0052FF;letter-spacing:-0.02em;">0</span>
+            <span class="font-bold text-xl mb-1.5" style="color:#0052FF;">원</span>
+          </div>
+
+          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+               style="background:rgba(0,168,100,.1);">
+            <i data-lucide="arrow-up-right" style="width:13px;height:13px;color:#00A864;stroke-width:2.5;"></i>
+            <span class="text-xs font-bold" style="color:#00A864;">예치금 60,000원 → 환급 12,500원</span>
+          </div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Refund account -->
+        <div class="py-4 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                 style="background:#FFEB00;">
+              <span class="font-black text-sm" style="color:#3C1E1E;">K</span>
+            </div>
+            <div>
+              <p class="text-xs" style="color:#A09C94;">환급 계좌</p>
+              <p class="text-sm font-semibold mt-0.5" style="color:#2D2A25;">카카오뱅크 3333-01-****</p>
+            </div>
+          </div>
+          <span class="badge-live text-xs px-2.5 py-1 rounded-full font-semibold">입금 예정</span>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <!-- Transaction ID + Settled stamp -->
+        <div class="pt-4 flex items-center justify-between">
+          <div>
+            <p class="text-xs" style="color:#C4C0B8;">거래 ID</p>
+            <p class="font-mono text-xs mt-0.5" style="color:#A09C94;">CN-20250317-8472-9316</p>
+            <p class="text-xs mt-0.5" style="color:#C4C0B8;">PortOne Escrow Settlement</p>
+          </div>
+
+          <!-- Settled stamp -->
+          <div class="settled-stamp">
+            <span class="text-center font-extrabold text-xs leading-tight" style="color:rgba(0,82,255,.55);">정산<br>완료</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ NETTING ALGORITHM CARD ═══════ -->
+  <div class="px-4 mt-3">
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center">
+          <i data-lucide="shuffle" style="width:15px;height:15px;color:#7C3AED;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">넷팅 알고리즘 효과</span>
+      </div>
+
+      <!-- Flow diagram -->
+      <div class="flex items-center gap-2 mb-4">
+
+        <!-- Before: 5 people -->
+        <div class="flex flex-col gap-1.5 flex-shrink-0">
+          <div class="flex items-center gap-1">
+            <div class="netting-node bg-gray-100 text-base">😊</div>
+            <div class="w-5 h-px bg-gray-300"></div>
+          </div>
+          <div class="flex items-center gap-1">
+            <div class="netting-node bg-gray-100 text-base">😊</div>
+            <div class="w-5 h-px bg-gray-300"></div>
+          </div>
+          <div class="flex items-center gap-1">
+            <div class="netting-node bg-gray-100 text-base">😊</div>
+            <div class="w-5 h-px bg-gray-300"></div>
+          </div>
+          <div class="flex items-center gap-1">
+            <div class="netting-node bg-gray-100 text-base">😊</div>
+            <div class="w-5 h-px bg-gray-300"></div>
+          </div>
+          <div class="flex items-center gap-1">
+            <div class="netting-node bg-gray-100 text-base">😊</div>
+            <div class="w-5 h-px bg-gray-300"></div>
+          </div>
+          <p class="text-gray-400 text-xs text-center mt-1">5명 각자</p>
+        </div>
+
+        <!-- Netting hub -->
+        <div class="flex flex-col items-center flex-shrink-0">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-1"
+               style="background:linear-gradient(135deg,#7C3AED,#A855F7);box-shadow:0 4px 14px rgba(124,58,237,.3);">
+            <i data-lucide="shuffle" style="width:20px;height:20px;color:white;"></i>
+          </div>
+          <p class="text-purple-600 text-xs font-bold">CN</p>
+        </div>
+
+        <!-- Arrow right -->
+        <div class="flex flex-col items-center flex-shrink-0">
+          <i data-lucide="chevrons-right" style="width:20px;height:20px;color:#7C3AED;"></i>
+        </div>
+
+        <!-- After: 1 settlement -->
+        <div class="flex-1">
+          <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-3 border border-purple-100">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="check-circle-2" style="width:16px;height:16px;color:#7C3AED;"></i>
+              <span class="text-purple-700 text-xs font-bold">자동 정산 완료</span>
+            </div>
+            <div class="flex items-center gap-1 mb-1">
+              <span class="text-gray-400 text-xs line-through">개별 송금 5번</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-purple-700 font-extrabold text-lg">1번</span>
+              <span class="text-gray-600 text-xs">일괄 처리</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary callout -->
+      <div class="rounded-2xl px-4 py-3.5 flex items-center gap-3"
+           style="background:linear-gradient(135deg,#F3F0FF,#EEF2FF);border:1px solid #E0D9FF;">
+        <i data-lucide="zap" style="width:18px;height:18px;color:#7C3AED;flex-shrink:0;"></i>
+        <p class="text-sm leading-snug" style="color:#4C1D95;">
+          복잡한 송금 <span class="font-extrabold">5번</span>을 크레딧-N이
+          <span class="font-extrabold text-purple-700">1번으로</span> 줄였어요!
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════ LINK SCORE REWARD CARD ═══════ -->
+  <div class="px-4 mt-3">
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="trending-up" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">링크 스코어 업데이트</span>
+        <span class="ml-auto inline-flex items-center gap-1 bg-green-50 text-green-600 text-xs font-bold px-2.5 py-1 rounded-full">
+          <i data-lucide="arrow-up" style="width:11px;height:11px;stroke-width:3;"></i>+15점
+        </span>
+      </div>
+
+      <!-- Before / After numbers -->
+      <div class="flex items-center gap-3 mb-5">
+        <div class="flex-1 text-center py-3 rounded-2xl bg-gray-50">
+          <p class="text-gray-400 text-xs font-medium mb-1">이전 점수</p>
+          <p class="text-gray-600 font-extrabold text-2xl">727</p>
+        </div>
+
+        <div class="flex flex-col items-center gap-1 flex-shrink-0">
+          <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
+            <i data-lucide="arrow-right" style="width:16px;height:16px;color:#00A864;stroke-width:2.5;"></i>
+          </div>
+          <span class="text-green-600 text-xs font-extrabold">+15</span>
+        </div>
+
+        <div class="flex-1 text-center py-3 rounded-2xl border-2 border-blue-200"
+             style="background:linear-gradient(135deg,#EEF2FF,#DBEAFE);">
+          <p class="text-blue-500 text-xs font-medium mb-1">현재 점수</p>
+          <p class="text-blue-600 font-extrabold text-2xl">742</p>
+        </div>
+      </div>
+
+      <!-- Score bar -->
+      <div class="mb-4">
+        <div class="flex justify-between text-xs text-gray-400 mb-1.5">
+          <span>Poor</span><span>Fair</span><span>Good</span><span>Excellent</span>
+        </div>
+        <div class="h-3 bg-gray-100 rounded-full overflow-hidden relative">
+          <!-- Old score marker -->
+          <div class="score-grow-anim h-full rounded-full"
+               style="background:linear-gradient(90deg,#0052FF,#60A5FA);"></div>
+          <!-- +15 badge on bar -->
+          <div class="absolute top-0 bottom-0 flex items-center"
+               style="left:74.2%;transform:translateX(-50%);">
+            <div class="w-3 h-3 rounded-full bg-white border-2 border-blue-500"></div>
+          </div>
+        </div>
+        <div class="flex justify-between mt-1">
+          <span class="text-gray-400 text-xs">0</span>
+          <span class="text-blue-600 text-xs font-bold">742 / 1000</span>
+        </div>
+      </div>
+
+      <!-- Reward reason -->
+      <div class="rounded-2xl px-4 py-3.5 flex items-start gap-2.5"
+           style="background:linear-gradient(135deg,#EEF6FF,#DBEAFE);border:1px solid #BFDBFE;">
+        <i data-lucide="award" style="width:16px;height:16px;color:#0052FF;flex-shrink:0;margin-top:1px;"></i>
+        <div>
+          <p class="text-gray-800 text-xs font-semibold mb-0.5">스코어 리워드 이유</p>
+          <p class="text-gray-600 text-xs leading-relaxed">
+            약속을 잘 지켜서 링크 스코어가
+            <span class="text-blue-600 font-extrabold">+15점</span> 올랐어요!<br>
+            <span class="text-gray-400">기한 내 입금 완료 +10점 · 전액 사용 완료 +5점</span>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════ ACTION BUTTONS ═══════ -->
+  <div class="px-4 mt-4 pb-10 grid grid-cols-2 gap-3">
+
+    <!-- Share -->
+    <button class="flex items-center justify-center gap-2 font-semibold text-sm py-4 rounded-2xl border-2 card-shadow-sm transition-colors hover:bg-blue-50"
+            style="background:white;color:#0052FF;border-color:#BFDBFE;">
+      <i data-lucide="share-2" style="width:16px;height:16px;"></i>
+      정산 내역 공유
+    </button>
+
+    <!-- Confirm (home) -->
+    <button onclick="location.href='index.html'"
+            class="flex items-center justify-center gap-2 text-white font-bold text-sm py-4 rounded-2xl transition-opacity hover:opacity-90"
+            style="background:linear-gradient(90deg,#0052FF,#4D94FF);box-shadow:0 8px 24px rgba(0,82,255,.35);">
+      <i data-lucide="home" style="width:16px;height:16px;"></i>
+      홈으로 돌아가기
+    </button>
+  </div>
+
+</div><!-- end phone frame -->
+
+
+<script>
+// ══════════════════════════════════════════════
+//  Lucide icons
+// ══════════════════════════════════════════════
+lucide.createIcons();
+
+
+// ══════════════════════════════════════════════
+//  Refund amount count-up animation
+// ══════════════════════════════════════════════
+function countUp(el, target, durationMs, delayMs = 0) {
+  setTimeout(() => {
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min((now - start) / durationMs, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      el.textContent = Math.round(eased * target).toLocaleString('ko-KR');
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, delayMs);
+}
+
+const refundEl = document.getElementById('refundAmount');
+if (refundEl) countUp(refundEl, 12500, 1600, 900);
+
+
+// ══════════════════════════════════════════════
+//  Share button (native share or copy)
+// ══════════════════════════════════════════════
+document.querySelectorAll('button').forEach(btn => {
+  if (btn.textContent.includes('정산 내역 공유')) {
+    btn.addEventListener('click', async () => {
+      const text = [
+        '📋 크레딧-N 정산 리포트',
+        '모임: 강남역 삼겹살 모임',
+        '총 지출: 237,500원 (5명)',
+        '1인 분담금: 47,500원',
+        '내 환급액: 12,500원',
+        '─────────────────',
+        '거래 ID: CN-20250317-8472',
+        '처리 일시: 2025.03.17 21:43',
+      ].join('\n');
+
+      if (navigator.share) {
+        await navigator.share({ title: '크레딧-N 정산 리포트', text }).catch(() => {});
+      } else {
+        await navigator.clipboard?.writeText(text).catch(() => {});
+        btn.textContent = '✓ 복사됨!';
+        setTimeout(() => {
+          btn.innerHTML = '<i data-lucide="share-2" style="width:16px;height:16px;"></i> 정산 내역 공유';
+          lucide.createIcons();
+        }, 2000);
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>

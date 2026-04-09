@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>크레딧-N | 새 모임 만들기</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="py-8">
+
+<div class="mx-auto relative"
+     style="width:390px; min-height:844px; background:#F0F4FF; overflow-x:hidden;
+            font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;">
+
+  <!-- ══════════════════════════════════════════════
+       HERO HEADER
+  ══════════════════════════════════════════════ -->
+  <div class="detail-header relative overflow-hidden px-5" style="padding-bottom:36px;">
+
+    <!-- Decorative circles -->
+    <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-white opacity-[0.05]"></div>
+    <div class="absolute top-20 -right-2 w-24 h-24 rounded-full bg-white opacity-[0.04]"></div>
+
+    <!-- Status bar -->
+    <div class="flex items-center justify-between pt-3 pb-1 relative z-10">
+      <span class="text-xs font-semibold text-white opacity-75">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <rect x="0"    y="6" width="3" height="6"  rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="4.5"  y="4" width="3" height="8"  rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="9"    y="2" width="3" height="10" rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" fill-opacity=".75"/>
+        </svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 9.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z" fill="white" fill-opacity=".75"/>
+          <path d="M4.5 6.8A4.97 4.97 0 018 5.5c1.38 0 2.63.56 3.5 1.3"  stroke="white" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M1.5 3.8A8.97 8.97 0 018 1.5c2.48 0 4.73 1 6.36 2.63" stroke="white" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <div class="w-6 h-3 rounded-sm p-px flex" style="border:1px solid rgba(255,255,255,.6);">
+          <div class="flex-1 rounded-sm" style="background:rgba(255,255,255,.7);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <div class="flex items-center justify-between py-3 relative z-10">
+      <a href="index.html"
+         class="w-10 h-10 rounded-2xl flex items-center justify-center"
+         style="background:rgba(255,255,255,.15);">
+        <i data-lucide="arrow-left" style="width:20px;height:20px;color:white;stroke-width:2.5;"></i>
+      </a>
+      <div class="text-center">
+        <h1 class="text-white font-bold text-base">새 모임 만들기</h1>
+        <p class="text-xs mt-0.5" style="color:rgba(147,197,253,.9);">에스크로 가상계좌 자동 발급</p>
+      </div>
+      <button class="w-10 h-10 rounded-2xl flex items-center justify-center"
+              style="background:rgba(255,255,255,.15);">
+        <i data-lucide="help-circle" style="width:18px;height:18px;color:white;"></i>
+      </button>
+    </div>
+
+    <!-- Step indicator -->
+    <div class="flex items-center justify-center gap-0 relative z-10 mt-1">
+      <div class="flex items-center gap-1.5">
+        <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+          <span class="text-blue-600 text-xs font-extrabold">1</span>
+        </div>
+        <span class="text-white text-xs font-semibold">기본 정보</span>
+      </div>
+      <div class="w-8 h-px mx-2" style="background:rgba(255,255,255,.35);"></div>
+      <div class="flex items-center gap-1.5">
+        <div class="w-6 h-6 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.25);">
+          <span class="text-white text-xs font-bold">2</span>
+        </div>
+        <span class="text-xs font-medium" style="color:rgba(255,255,255,.7);">에스크로</span>
+      </div>
+      <div class="w-8 h-px mx-2" style="background:rgba(255,255,255,.35);"></div>
+      <div class="flex items-center gap-1.5">
+        <div class="w-6 h-6 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.25);">
+          <span class="text-white text-xs font-bold">3</span>
+        </div>
+        <span class="text-xs font-medium" style="color:rgba(255,255,255,.7);">초대</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCROLLABLE FORM AREA
+  ══════════════════════════════════════════════ -->
+  <div class="px-4 space-y-3 mt-4 pb-36">
+
+    <!-- ── CARD 1: 기본 정보 ── -->
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="pencil" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">기본 정보</span>
+      </div>
+
+      <!-- Meeting type emojis -->
+      <div class="mb-4">
+        <p class="text-xs font-semibold text-gray-500 mb-2.5">모임 유형</p>
+        <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;">
+          <button class="emoji-chip emoji-chip-active" onclick="selectEmoji(this, '🍻')">
+            <span class="text-xl">🍻</span>
+            <span class="text-xs font-medium text-blue-600" style="font-size:10px;">회식</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '🏕️')">
+            <span class="text-xl">🏕️</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">여행</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '🎾')">
+            <span class="text-xl">🎾</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">스포츠</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '🎂')">
+            <span class="text-xl">🎂</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">파티</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '🎮')">
+            <span class="text-xl">🎮</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">게임</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '✈️')">
+            <span class="text-xl">✈️</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">기타</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Meeting name -->
+      <div class="mb-3">
+        <label class="text-xs font-semibold text-gray-500 mb-2 block">모임 이름 <span class="text-red-400">*</span></label>
+        <input id="meetingName"
+               type="text"
+               class="form-input"
+               placeholder="예: 주말 동아리 회식"
+               maxlength="30"
+               oninput="updateCharCount(this)" />
+        <div class="flex justify-end mt-1">
+          <span id="charCount" class="text-xs text-gray-300">0 / 30</span>
+        </div>
+      </div>
+
+      <!-- Date + Time row -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-2 block">날짜 <span class="text-red-400">*</span></label>
+          <input type="date"
+                 class="form-input text-sm"
+                 value="2025-03-22"
+                 style="color-scheme:light;" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-2 block">시간</label>
+          <input type="time"
+                 class="form-input text-sm"
+                 value="19:00"
+                 style="color-scheme:light;" />
+        </div>
+      </div>
+
+      <!-- Location (optional) -->
+      <div class="mt-3">
+        <label class="text-xs font-semibold text-gray-500 mb-2 block">장소 (선택)</label>
+        <div class="relative">
+          <input type="text"
+                 class="form-input"
+                 placeholder="예: 강남역 2번 출구 근처"
+                 style="padding-left:40px;" />
+          <i data-lucide="map-pin" style="width:16px;height:16px;color:#9CA3AF;position:absolute;left:14px;top:50%;transform:translateY(-50%);"></i>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ── CARD 2: 에스크로 설정 ── -->
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="wallet" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">에스크로 설정</span>
+      </div>
+
+      <!-- 1인당 예치금 -->
+      <div class="mb-4">
+        <label class="text-xs font-semibold text-gray-500 mb-2 block">1인당 예치금 <span class="text-red-400">*</span></label>
+        <div class="amount-input-wrap">
+          <input id="depositAmount"
+                 type="text"
+                 class="form-input"
+                 placeholder="0"
+                 inputmode="numeric"
+                 oninput="formatAmountInput(this); updateTotal();" />
+          <span class="unit">원</span>
+        </div>
+
+        <!-- Quick select -->
+        <div class="flex gap-2 mt-2.5 flex-wrap">
+          <button class="form-chip" onclick="setAmount(20000, this)">2만원</button>
+          <button class="form-chip" onclick="setAmount(30000, this)">3만원</button>
+          <button class="form-chip" onclick="setAmount(50000, this)">5만원</button>
+          <button class="form-chip" onclick="setAmount(100000, this)">10만원</button>
+        </div>
+      </div>
+
+      <!-- 참여 인원 목표 -->
+      <div class="mb-4">
+        <label class="text-xs font-semibold text-gray-500 mb-2 block">참여 인원 목표</label>
+        <div class="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100">
+          <button onclick="adjustPeople(-1)"
+                  class="w-9 h-9 rounded-xl bg-white flex items-center justify-center card-shadow-sm transition-colors hover:bg-blue-50"
+                  style="border:1px solid #E5E7EB;">
+            <i data-lucide="minus" style="width:16px;height:16px;color:#374151;stroke-width:2.5;"></i>
+          </button>
+          <div class="text-center">
+            <span id="peopleCount" class="text-gray-900 font-extrabold text-2xl">5</span>
+            <span class="text-gray-500 text-sm font-medium ml-1">명</span>
+          </div>
+          <button onclick="adjustPeople(1)"
+                  class="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center transition-colors hover:bg-blue-600">
+            <i data-lucide="plus" style="width:16px;height:16px;color:white;stroke-width:2.5;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 예치금 버퍼 -->
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-xs font-semibold text-gray-500">예치금 버퍼 (Buffer)</label>
+          <span class="text-xs font-medium text-orange-500 flex items-center gap-1">
+            <i data-lucide="info" style="width:11px;height:11px;"></i>
+            5~10% 권장
+          </span>
+        </div>
+
+        <!-- Buffer chips -->
+        <div class="flex gap-2 mb-3">
+          <button class="form-chip flex-1 text-center" onclick="selectBuffer(5, this)">
+            <span class="block font-extrabold text-base">5%</span>
+            <span class="block text-xs opacity-70 mt-0.5">보수적</span>
+          </button>
+          <button class="form-chip form-chip-active flex-1 text-center" onclick="selectBuffer(7, this)">
+            <span class="block font-extrabold text-base">7%</span>
+            <span class="block text-xs opacity-70 mt-0.5">권장 ✓</span>
+          </button>
+          <button class="form-chip flex-1 text-center" onclick="selectBuffer(10, this)">
+            <span class="block font-extrabold text-base">10%</span>
+            <span class="block text-xs opacity-70 mt-0.5">여유있게</span>
+          </button>
+          <button class="form-chip flex-1 text-center" onclick="selectBuffer(0, this)" id="customBufferBtn">
+            <span class="block font-extrabold text-base">직접</span>
+            <span class="block text-xs opacity-70 mt-0.5">입력</span>
+          </button>
+        </div>
+
+        <!-- Buffer warning -->
+        <div class="buffer-warn rounded-2xl px-3.5 py-3 flex items-start gap-2.5">
+          <i data-lucide="alert-triangle" style="width:14px;height:14px;color:#D97706;flex-shrink:0;margin-top:1px;"></i>
+          <p class="text-xs leading-relaxed" style="color:#92400E;">
+            결제가 예치금을 초과할 경우를 대비한 <strong>추가 여유 자금</strong>이에요.
+            모임 종료 후 미사용 버퍼는 전액 환급됩니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 예상 총 에스크로 계산 -->
+      <div id="totalPreview" class="total-preview rounded-2xl px-4 py-4">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-blue-700 text-xs font-semibold">예상 에스크로 계산</span>
+          <i data-lucide="calculator" style="width:14px;height:14px;color:#3B82F6;"></i>
+        </div>
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between" style="color:#4B5563;">
+            <span>1인 예치금</span>
+            <span id="calcDeposit" class="font-semibold text-gray-800">—</span>
+          </div>
+          <div class="flex justify-between" style="color:#4B5563;">
+            <span>참여 인원</span>
+            <span id="calcPeople" class="font-semibold text-gray-800">5명</span>
+          </div>
+          <div class="flex justify-between" style="color:#4B5563;">
+            <span>버퍼 (<span id="calcBufferPct">7</span>%)</span>
+            <span id="calcBuffer" class="font-semibold text-gray-800">—</span>
+          </div>
+        </div>
+        <div class="border-t border-blue-200 mt-3 pt-3 flex justify-between items-center">
+          <span class="text-blue-800 text-sm font-bold">총 에스크로 목표</span>
+          <span id="calcTotal" class="text-blue-700 font-extrabold text-xl">—원</span>
+        </div>
+        <p class="text-blue-400 text-xs mt-1.5 text-right">= 예치금 × 인원 × (1 + 버퍼)</p>
+      </div>
+
+    </div>
+
+
+    <!-- ── CARD 3: 가상계좌 발급 프리뷰 ── -->
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="landmark" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">가상계좌 발급 프리뷰</span>
+        <span class="ml-auto badge-live text-xs px-2.5 py-1 rounded-full font-semibold">자동 발급</span>
+      </div>
+
+      <!-- PortOne notice -->
+      <div class="rounded-2xl px-4 py-4 mb-4 flex items-start gap-3"
+           style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF);border:1px solid #C7D2FE;">
+        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0 card-shadow-sm">
+          <!-- PortOne logo placeholder -->
+          <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs font-black text-white"
+               style="background:linear-gradient(135deg,#6366F1,#8B5CF6);">P</div>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5 mb-1">
+            <span class="text-indigo-700 text-xs font-extrabold">PortOne</span>
+            <span class="text-indigo-400 text-xs">연동</span>
+          </div>
+          <p class="text-gray-700 text-xs leading-relaxed">
+            모임 생성 시 <strong>PortOne</strong>을 통해 전용 가상계좌가
+            <span class="text-indigo-600 font-bold">즉시 발급</span>됩니다.
+            별도 서류나 대기 없이 자동으로 처리돼요.
+          </p>
+        </div>
+      </div>
+
+      <!-- Account preview (masked) -->
+      <div class="rounded-2xl px-4 py-3.5 border border-dashed border-gray-200 bg-gray-50">
+        <p class="text-gray-400 text-xs font-medium mb-2.5 text-center">발급 예시</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-xs font-extrabold">T</span>
+          </div>
+          <div class="flex-1">
+            <p class="text-gray-500 text-xs font-medium">토스뱅크 (모임 전용)</p>
+            <p class="text-gray-800 font-bold text-sm mt-0.5 tracking-widest">1000 - ???? - ????</p>
+          </div>
+          <div class="flex flex-col items-end gap-1">
+            <span class="text-gray-300 text-xs">생성 후 확정</span>
+            <div class="flex gap-0.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-gray-200 animate-pulse"></div>
+              <div class="w-1.5 h-1.5 rounded-full bg-gray-200 animate-pulse" style="animation-delay:.2s"></div>
+              <div class="w-1.5 h-1.5 rounded-full bg-gray-200 animate-pulse" style="animation-delay:.4s"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features list -->
+      <div class="mt-4 space-y-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check" style="width:11px;height:11px;color:#00A864;stroke-width:3;"></i>
+          </div>
+          <p class="text-gray-600 text-xs">입금 즉시 에스크로에 자동 반영</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check" style="width:11px;height:11px;color:#00A864;stroke-width:3;"></i>
+          </div>
+          <p class="text-gray-600 text-xs">QR 결제 시 가상계좌 잔액에서 직접 차감</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check" style="width:11px;height:11px;color:#00A864;stroke-width:3;"></i>
+          </div>
+          <p class="text-gray-600 text-xs">모임 종료 후 잔액 넷팅 알고리즘으로 자동 환급</p>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ── CARD 4: 친구 초대 ── -->
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="users" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">친구 초대</span>
+        <span class="ml-auto text-gray-400 text-xs">모임 생성 후에도 가능</span>
+      </div>
+
+      <!-- Invite code display -->
+      <div class="mb-4">
+        <p class="text-xs font-semibold text-gray-500 mb-3">참여 코드 (미리보기)</p>
+        <div class="flex items-center justify-center gap-1.5 mb-3" id="inviteCodeDisplay">
+          <!-- Rendered by JS -->
+        </div>
+        <div class="flex items-center justify-center gap-2">
+          <button onclick="copyCode()"
+                  id="copyCodeBtn"
+                  class="flex items-center gap-1.5 text-blue-600 text-xs font-bold bg-blue-50 px-4 py-2 rounded-xl transition-colors hover:bg-blue-100">
+            <i data-lucide="copy" style="width:13px;height:13px;"></i>
+            코드 복사
+          </button>
+          <button onclick="regenerateCode()"
+                  class="flex items-center gap-1.5 text-gray-500 text-xs font-semibold bg-gray-100 px-4 py-2 rounded-xl transition-colors hover:bg-gray-200">
+            <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i>
+            재생성
+          </button>
+        </div>
+        <p class="text-gray-400 text-xs text-center mt-2">
+          6자리 코드로 친구가 모임에 참여할 수 있어요
+        </p>
+      </div>
+
+      <div class="border-t border-gray-100 pt-4">
+        <p class="text-xs font-semibold text-gray-500 mb-3">공유 방법</p>
+
+        <div class="space-y-2.5">
+          <!-- KakaoTalk -->
+          <button onclick="shareKakao()"
+                  class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-colors hover:opacity-90 active:scale-98"
+                  style="background:#FFEB00;">
+            <!-- Kakao icon -->
+            <div class="w-9 h-9 rounded-xl bg-black bg-opacity-10 flex items-center justify-center flex-shrink-0">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 2C5.58 2 2 4.91 2 8.5c0 2.27 1.39 4.27 3.5 5.45L4.5 17l3.8-2.08c.55.08 1.12.12 1.7.12 4.42 0 8-2.91 8-6.5S14.42 2 10 2z" fill="#3C1E1E"/>
+              </svg>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="font-bold text-sm" style="color:#3C1E1E;">카카오톡으로 공유</p>
+              <p class="text-xs mt-0.5" style="color:#5C3C3C;">친구들에게 초대장을 보내요</p>
+            </div>
+            <i data-lucide="chevron-right" style="width:16px;height:16px;color:#3C1E1E;opacity:.5;"></i>
+          </button>
+
+          <!-- Link copy -->
+          <button onclick="copyInviteLink()"
+                  class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-gray-50 border border-gray-100 transition-colors hover:bg-gray-100">
+            <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 card-shadow-sm">
+              <i data-lucide="link-2" style="width:18px;height:18px;color:#0052FF;"></i>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="text-gray-800 font-bold text-sm">초대 링크 복사</p>
+              <p class="text-gray-400 text-xs mt-0.5" id="linkPreview">credit-n.app/join/------</p>
+            </div>
+            <i data-lucide="copy" style="width:15px;height:15px;color:#9CA3AF;"></i>
+          </button>
+
+          <!-- QR share -->
+          <button class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-gray-50 border border-gray-100 transition-colors hover:bg-gray-100">
+            <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 card-shadow-sm">
+              <i data-lucide="qr-code" style="width:18px;height:18px;color:#6B7280;"></i>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="text-gray-800 font-bold text-sm">초대 QR 생성</p>
+              <p class="text-gray-400 text-xs mt-0.5">모임 생성 후 QR 코드 발급</p>
+            </div>
+            <span class="text-xs text-gray-300 font-medium">생성 후</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- end form area -->
+
+
+  <!-- ══════════════════════════════════════════════
+       BOTTOM CTA (fixed)
+  ══════════════════════════════════════════════ -->
+  <div class="absolute bottom-0 left-0 right-0 px-4 pb-6 pt-4"
+       style="background:linear-gradient(to top, #F0F4FF 75%, rgba(240,244,255,0) 100%);">
+
+    <!-- Summary pill -->
+    <div class="flex items-center justify-between px-4 py-2.5 rounded-2xl bg-white mb-3 card-shadow-sm">
+      <div class="flex items-center gap-2">
+        <span id="summaryEmoji" class="text-lg">🍻</span>
+        <span id="summaryName" class="text-gray-700 text-xs font-semibold truncate" style="max-width:120px;">모임 이름 입력 중...</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-gray-400 text-xs"><span id="summaryPeople">5</span>명</span>
+        <span class="text-gray-200">·</span>
+        <span class="text-blue-600 text-xs font-bold"><span id="summaryTotal">—</span>원</span>
+      </div>
+    </div>
+
+    <!-- CTA button -->
+    <button onclick="createGroup()"
+            id="createBtn"
+            class="w-full py-4 rounded-2xl font-extrabold text-base text-white flex items-center justify-center gap-2.5 transition-opacity hover:opacity-90 active:scale-98"
+            style="background:linear-gradient(90deg,#0038CC,#0052FF,#2B7FFF);box-shadow:0 10px 30px rgba(0,82,255,.4);">
+      <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
+      모임 만들기
+    </button>
+
+    <p class="text-center text-gray-400 text-xs mt-2.5">
+      생성 즉시 PortOne 가상계좌가 발급됩니다
+    </p>
+  </div>
+
+</div><!-- end phone frame -->
+
+
+<script>
+// ══════════════════════════════════════════════
+//  Init
+// ══════════════════════════════════════════════
+lucide.createIcons();
+
+let selectedEmoji   = '🍻';
+let depositAmount   = 0;
+let peopleCount     = 5;
+let bufferPct       = 7;
+let inviteCode      = '';
+
+// ── Generate invite code ──────────────────────
+function makeCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+}
+
+function renderCode(code) {
+  const el = document.getElementById('inviteCodeDisplay');
+  el.innerHTML = '';
+  [...code].forEach((ch, i) => {
+    if (i === 3) {
+      const sep = document.createElement('span');
+      sep.style.cssText = 'color:#D1D5DB;font-size:20px;font-weight:700;align-self:center;margin:0 2px;';
+      sep.textContent = '-';
+      el.appendChild(sep);
+    }
+    const box = document.createElement('div');
+    box.className = 'invite-char';
+    box.style.cssText = [
+      'width:38px;height:46px',
+      'background:linear-gradient(135deg,#EEF2FF,#E0E7FF)',
+      'border:1.5px solid #C7D2FE',
+      'border-radius:12px',
+      'display:flex;align-items:center;justify-content:center',
+      'font-size:20px;font-weight:800;color:#0052FF',
+      'font-family:monospace',
+      `animation-delay:${i * 45}ms`,
+    ].join(';');
+    box.textContent = ch;
+    el.appendChild(box);
+  });
+  // Update link preview
+  document.getElementById('linkPreview').textContent = `credit-n.app/join/${code}`;
+}
+
+inviteCode = makeCode();
+renderCode(inviteCode);
+
+
+// ══════════════════════════════════════════════
+//  Meeting type emoji
+// ══════════════════════════════════════════════
+function selectEmoji(btn, emoji) {
+  document.querySelectorAll('.emoji-chip').forEach(el => {
+    el.classList.remove('emoji-chip-active');
+    el.querySelector('span:last-child').classList.remove('text-blue-600');
+    el.querySelector('span:last-child').classList.add('text-gray-500');
+  });
+  btn.classList.add('emoji-chip-active');
+  btn.querySelector('span:last-child').classList.add('text-blue-600');
+  btn.querySelector('span:last-child').classList.remove('text-gray-500');
+  selectedEmoji = emoji;
+  document.getElementById('summaryEmoji').textContent = emoji;
+}
+
+
+// ══════════════════════════════════════════════
+//  Amount input
+// ══════════════════════════════════════════════
+function formatAmountInput(input) {
+  const raw = input.value.replace(/[^0-9]/g, '');
+  depositAmount = parseInt(raw) || 0;
+  input.value = depositAmount ? depositAmount.toLocaleString('ko-KR') : '';
+}
+
+function setAmount(amount, btn) {
+  document.querySelectorAll('.form-chip').forEach(el => {
+    if (['2만원','3만원','5만원','10만원'].includes(el.textContent.trim())) {
+      el.classList.remove('form-chip-active');
+    }
+  });
+  btn.classList.add('form-chip-active');
+  depositAmount = amount;
+  const input = document.getElementById('depositAmount');
+  input.value = amount.toLocaleString('ko-KR');
+  updateTotal();
+}
+
+
+// ══════════════════════════════════════════════
+//  People stepper
+// ══════════════════════════════════════════════
+function adjustPeople(delta) {
+  peopleCount = Math.max(2, Math.min(20, peopleCount + delta));
+  document.getElementById('peopleCount').textContent = peopleCount;
+  document.getElementById('summaryPeople').textContent = peopleCount;
+  document.getElementById('calcPeople').textContent = peopleCount + '명';
+  updateTotal();
+}
+
+
+// ══════════════════════════════════════════════
+//  Buffer selection
+// ══════════════════════════════════════════════
+function selectBuffer(pct, btn) {
+  document.querySelectorAll('.form-chip').forEach(el => {
+    if (['5%\n보수적','7%\n권장 ✓','10%\n여유있게','직접\n입력'].some(t =>
+      el.textContent.trim().replace(/\s+/g,' ').includes(t.replace(/\s+/g,' ').trim().split('\n')[0])
+    )) {
+      // check if it's a buffer chip by checking its textContent pattern
+    }
+  });
+  // Simpler: target all chips in the buffer section
+  btn.parentElement.querySelectorAll('.form-chip').forEach(el => el.classList.remove('form-chip-active'));
+  btn.classList.add('form-chip-active');
+  bufferPct = pct || 7;
+  document.getElementById('calcBufferPct').textContent = bufferPct;
+  updateTotal();
+}
+
+
+// ══════════════════════════════════════════════
+//  Total calculation
+// ══════════════════════════════════════════════
+function updateTotal() {
+  const calcDeposit = document.getElementById('calcDeposit');
+  const calcBuffer  = document.getElementById('calcBuffer');
+  const calcTotal   = document.getElementById('calcTotal');
+  const summaryTotal= document.getElementById('summaryTotal');
+
+  if (!depositAmount) {
+    calcDeposit.textContent = '—';
+    calcBuffer.textContent  = '—';
+    calcTotal.textContent   = '—';
+    summaryTotal.textContent = '—';
+    return;
+  }
+
+  const base      = depositAmount * peopleCount;
+  const bufferAmt = Math.round(base * (bufferPct / 100));
+  const total     = base + bufferAmt;
+
+  calcDeposit.textContent = depositAmount.toLocaleString('ko-KR') + '원';
+  calcBuffer.textContent  = '+' + bufferAmt.toLocaleString('ko-KR') + '원';
+  calcTotal.textContent   = total.toLocaleString('ko-KR') + '원';
+  summaryTotal.textContent= total.toLocaleString('ko-KR');
+}
+
+
+// ══════════════════════════════════════════════
+//  Char count for meeting name
+// ══════════════════════════════════════════════
+function updateCharCount(input) {
+  const count = input.value.length;
+  document.getElementById('charCount').textContent = `${count} / 30`;
+  const name = input.value || '모임 이름 입력 중...';
+  document.getElementById('summaryName').textContent = name;
+}
+
+
+// ══════════════════════════════════════════════
+//  Invite code actions
+// ══════════════════════════════════════════════
+function copyCode() {
+  navigator.clipboard?.writeText(inviteCode).catch(() => {});
+  const btn = document.getElementById('copyCodeBtn');
+  btn.innerHTML = '<i data-lucide="check" style="width:13px;height:13px;color:#00A864;"></i><span style="color:#00A864;">복사됨!</span>';
+  lucide.createIcons();
+  setTimeout(() => {
+    btn.innerHTML = '<i data-lucide="copy" style="width:13px;height:13px;"></i> 코드 복사';
+    lucide.createIcons();
+  }, 2000);
+}
+
+function regenerateCode() {
+  inviteCode = makeCode();
+  renderCode(inviteCode);
+  document.getElementById('linkPreview').textContent = `credit-n.app/join/${inviteCode}`;
+}
+
+function copyInviteLink() {
+  const link = `https://credit-n.app/join/${inviteCode}`;
+  navigator.clipboard?.writeText(link).catch(() => {});
+  const btn = event.currentTarget;
+  const original = btn.querySelector('p:last-child').textContent;
+  btn.querySelector('p:last-child').textContent = '링크 복사됨! ✓';
+  setTimeout(() => {
+    btn.querySelector('p:last-child').textContent = original;
+  }, 2000);
+}
+
+function shareKakao() {
+  alert('카카오톡 SDK 연동이 필요합니다.\n실제 서비스에서는 Kakao.Share.sendDefault()가 호출됩니다.');
+}
+
+
+// ══════════════════════════════════════════════
+//  Create group action
+// ══════════════════════════════════════════════
+function createGroup() {
+  const name = document.getElementById('meetingName').value.trim();
+  if (!name) {
+    document.getElementById('meetingName').focus();
+    document.getElementById('meetingName').style.borderColor = '#EF4444';
+    document.getElementById('meetingName').style.boxShadow  = '0 0 0 3px rgba(239,68,68,.15)';
+    setTimeout(() => {
+      document.getElementById('meetingName').style.borderColor = '';
+      document.getElementById('meetingName').style.boxShadow  = '';
+    }, 2500);
+    return;
+  }
+  if (!depositAmount) {
+    document.getElementById('depositAmount').focus();
+    document.getElementById('depositAmount').style.borderColor = '#EF4444';
+    setTimeout(() => {
+      document.getElementById('depositAmount').style.borderColor = '';
+    }, 2500);
+    return;
+  }
+
+  const btn = document.getElementById('createBtn');
+  btn.innerHTML = '<span style="border:2px solid rgba(255,255,255,.5);border-top-color:white;border-radius:50%;width:20px;height:20px;animation:spin-once .8s linear infinite;display:inline-block;"></span> 가상계좌 발급 중...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    location.href = 'escrow-detail.html';
+  }, 1800);
+}
+</script>
+
+</body>
+</html>

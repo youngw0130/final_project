@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>크레딧-N | Credit-N</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="py-8">
+  <div class="phone-frame">
+
+    <!-- ──────────── STATUS BAR ──────────── -->
+    <div class="flex items-center justify-between px-6 pt-3 pb-1">
+      <span class="text-xs font-semibold text-gray-500">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <!-- Signal -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <rect x="0" y="6" width="3" height="6" rx="1" fill="#374151"/>
+          <rect x="4.5" y="4" width="3" height="8" rx="1" fill="#374151"/>
+          <rect x="9" y="2" width="3" height="10" rx="1" fill="#374151"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="1" fill="#374151"/>
+        </svg>
+        <!-- WiFi -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 9.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z" fill="#374151"/>
+          <path d="M4.5 6.8A4.97 4.97 0 018 5.5c1.38 0 2.63.56 3.5 1.3" stroke="#374151" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M1.5 3.8A8.97 8.97 0 018 1.5c2.48 0 4.73 1 6.36 2.63" stroke="#374151" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <!-- Battery -->
+        <div class="flex items-center gap-0.5">
+          <div class="w-6 h-3 rounded-sm border border-gray-500 p-px flex">
+            <div class="flex-1 bg-gray-500 rounded-sm"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────────── SCROLLABLE CONTENT ──────────── -->
+    <div class="scroll-area pb-6">
+
+      <!-- ───── HEADER ───── -->
+      <div class="escrow-card px-6 pt-4 pb-8 relative overflow-hidden">
+        <!-- Decorative circles -->
+        <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white opacity-5"></div>
+        <div class="absolute top-16 -right-4 w-24 h-24 rounded-full bg-white opacity-5"></div>
+
+        <!-- Top row: greeting + notification -->
+        <div class="flex items-center justify-between mb-6 relative z-10">
+          <div>
+            <p class="text-blue-200 text-xs font-medium tracking-wide">안녕하세요 👋</p>
+            <h1 class="text-white text-lg font-bold mt-0.5">김지원 님</h1>
+          </div>
+          <div class="relative">
+            <button class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+            </button>
+            <!-- Notification dot -->
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-400 rounded-full border border-blue-500"></span>
+          </div>
+        </div>
+
+        <!-- Link Score -->
+        <div class="bg-white bg-opacity-15 backdrop-blur-sm rounded-2xl p-4 relative z-10">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-blue-100 text-xs font-medium">링크 스코어</span>
+                <span class="bg-white bg-opacity-20 text-white text-xs px-2 py-0.5 rounded-full font-medium">GOOD</span>
+              </div>
+              <div class="flex items-end gap-1">
+                <span class="text-white text-4xl font-extrabold tracking-tight">742</span>
+                <span class="text-blue-200 text-sm mb-1">/ 1000</span>
+              </div>
+              <div class="flex items-center gap-1.5 mt-2">
+                <svg class="w-3 h-3 text-green-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                </svg>
+                <span class="text-green-300 text-xs font-semibold">+18 pts</span>
+                <span class="text-blue-200 text-xs">지난 달 대비</span>
+              </div>
+            </div>
+            <!-- Radial gauge -->
+            <div class="flex flex-col items-center">
+              <div class="relative w-20 h-20">
+                <svg viewBox="0 0 80 80" class="w-20 h-20 -rotate-90">
+                  <!-- background track -->
+                  <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="8" stroke-dasharray="157" stroke-dashoffset="39" stroke-linecap="round"/>
+                  <!-- score fill: 742/1000 = 74.2% of 157 ≈ 116.6 -->
+                  <circle cx="40" cy="40" r="30" fill="none" stroke="white" stroke-width="8" stroke-dasharray="157" stroke-dashoffset="calc(39 + (157 * (1 - 0.742)))" stroke-linecap="round"
+                    style="stroke-dashoffset: calc(39 + 40.7)"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span class="text-white text-lg font-bold leading-none">74%</span>
+                </div>
+              </div>
+              <span class="text-blue-200 text-xs mt-1">신용도</span>
+            </div>
+          </div>
+
+          <!-- Score bar -->
+          <div class="mt-3">
+            <div class="flex justify-between text-xs text-blue-200 mb-1">
+              <span>Poor</span>
+              <span>Fair</span>
+              <span>Good</span>
+              <span>Excellent</span>
+            </div>
+            <div class="h-2 bg-white bg-opacity-20 rounded-full progress-shimmer">
+              <div class="h-full rounded-full bg-gradient-to-r from-white to-blue-100" style="width: 74.2%"></div>
+            </div>
+            <div class="flex justify-between mt-1">
+              <span class="text-blue-200 text-xs">0</span>
+              <div class="flex items-center gap-1">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+                <span class="text-white text-xs font-semibold">742</span>
+              </div>
+              <span class="text-blue-200 text-xs">1000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ───── MAIN CONTENT ───── -->
+      <div class="px-5 -mt-4 relative z-10 space-y-4">
+
+        <!-- ── ACTIVE ESCROW CARD ── -->
+        <div class="bg-white rounded-3xl p-5 card-shadow">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+              </div>
+              <span class="font-bold text-gray-900 text-sm">에스크로 가상계좌</span>
+            </div>
+            <span class="badge-live text-xs px-2.5 py-1 rounded-full font-semibold">● 진행중</span>
+          </div>
+
+          <!-- Event name -->
+          <div class="mb-3">
+            <p class="text-gray-400 text-xs font-medium">모임명</p>
+            <p class="text-gray-800 font-semibold text-sm mt-0.5">대학 친구들 MT · 3월 🏕️</p>
+          </div>
+
+          <!-- Balance -->
+          <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 mb-4">
+            <p class="text-gray-500 text-xs font-medium mb-1">가상계좌 잔액</p>
+            <div class="flex items-end gap-2">
+              <span class="text-gray-900 text-3xl font-extrabold tracking-tight">180,000</span>
+              <span class="text-gray-500 text-sm mb-1 font-medium">원</span>
+            </div>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span class="text-gray-400 text-xs">목표</span>
+              <span class="text-blue-600 text-xs font-semibold">300,000원</span>
+              <span class="text-gray-300 text-xs">·</span>
+              <span class="text-gray-400 text-xs">60% 달성</span>
+            </div>
+          </div>
+
+          <!-- Deposit progress: members -->
+          <div class="mb-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-gray-700 text-xs font-semibold">입금 현황</span>
+              <span class="text-blue-600 text-xs font-bold">3 / 5명 완료</span>
+            </div>
+            <!-- Member avatars -->
+            <div class="flex items-center gap-2">
+              <!-- Paid -->
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold ring-2 ring-blue-200">지원</div>
+                <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold ring-2 ring-blue-200">민준</div>
+                <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold ring-2 ring-blue-200">수아</div>
+                <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+              </div>
+              <!-- Not paid -->
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold ring-2 ring-gray-100">예진</div>
+                <div class="w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold ring-2 ring-gray-100">재현</div>
+                <div class="w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
+              </div>
+              <!-- Send reminder -->
+              <div class="ml-auto">
+                <button class="flex items-center gap-1 text-xs text-blue-500 font-semibold bg-blue-50 px-3 py-1.5 rounded-full">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                  </svg>
+                  재촉하기
+                </button>
+              </div>
+            </div>
+            <!-- Progress bar -->
+            <div class="h-2 bg-gray-100 rounded-full mt-3 progress-shimmer overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" style="width:60%"></div>
+            </div>
+          </div>
+
+          <!-- Virtual account number -->
+          <div class="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-2.5">
+            <div>
+              <p class="text-gray-400 text-xs">가상 계좌번호</p>
+              <p class="text-gray-700 text-sm font-semibold mt-0.5">토스뱅크 1000-1234-5678</p>
+            </div>
+            <button class="text-blue-500 text-xs font-semibold bg-blue-50 px-3 py-1.5 rounded-lg">복사</button>
+          </div>
+        </div>
+
+        <!-- ── QR PAYMENT BUTTON (HERO) ── -->
+        <div class="bg-white rounded-3xl p-5 card-shadow">
+          <p class="text-gray-800 font-bold text-sm mb-4">퀵 액션</p>
+          <div class="flex flex-col items-center">
+            <div class="qr-btn-outer mb-4">
+              <button class="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-2xl px-8 py-4 flex items-center justify-center gap-3 shadow-lg shadow-blue-200 active:scale-95 transition-transform">
+                <!-- QR icon -->
+                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12v.01M12 4H4v8h8V4zM4 16h4v4H4v-4zm12-12h4v4h-4V4z"/>
+                  </svg>
+                </div>
+                <div class="text-left">
+                  <p class="text-white font-bold text-base leading-tight">결제용 QR 생성</p>
+                  <p class="text-blue-200 text-xs mt-0.5">가상계좌 잔액으로 바로 결제</p>
+                </div>
+              </button>
+            </div>
+
+            <!-- Secondary quick actions -->
+            <div class="grid grid-cols-3 gap-3 w-full mt-2">
+              <button class="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-2xl hover:bg-blue-50 transition-colors group">
+                <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-blue-100 flex items-center justify-center card-shadow-sm transition-colors">
+                  <svg class="w-5 h-5 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                  </svg>
+                </div>
+                <span class="text-gray-600 text-xs font-medium group-hover:text-blue-600">입금하기</span>
+              </button>
+              <button class="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-2xl hover:bg-blue-50 transition-colors group">
+                <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-blue-100 flex items-center justify-center card-shadow-sm transition-colors">
+                  <svg class="w-5 h-5 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                </div>
+                <span class="text-gray-600 text-xs font-medium group-hover:text-blue-600">멤버 초대</span>
+              </button>
+              <button class="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-2xl hover:bg-blue-50 transition-colors group">
+                <div class="w-10 h-10 rounded-xl bg-white group-hover:bg-blue-100 flex items-center justify-center card-shadow-sm transition-colors">
+                  <svg class="w-5 h-5 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <span class="text-gray-600 text-xs font-medium group-hover:text-blue-600">정산하기</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── NETTING INFO BANNER ── -->
+        <div class="bg-gradient-to-r from-indigo-50 to-blue-50 border border-blue-100 rounded-2xl px-4 py-3 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="text-gray-800 text-xs font-semibold">넷팅 자동 정산 예약됨</p>
+            <p class="text-gray-500 text-xs mt-0.5">모임 종료 시 잔액이 1/n로 자동 환급돼요</p>
+          </div>
+          <span class="badge-pending text-xs px-2.5 py-1 rounded-full font-semibold whitespace-nowrap">D-2</span>
+        </div>
+
+        <!-- ── ACTIVITY HISTORY ── -->
+        <div class="bg-white rounded-3xl p-5 card-shadow">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-gray-900 font-bold text-sm">최근 활동 내역</span>
+            <button class="text-blue-500 text-xs font-semibold">전체 보기</button>
+          </div>
+
+          <div class="space-y-3">
+
+            <!-- TX 1: QR Payment -->
+            <div class="flex items-center gap-3">
+              <div class="tx-icon bg-red-50">
+                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12v.01M12 4H4v8h8V4zM4 16h4v4H4v-4zm12-12h4v4h-4V4z"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-1.5">
+                  <p class="text-gray-800 text-sm font-semibold">QR 결제</p>
+                  <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full">편의점</span>
+                </div>
+                <p class="text-gray-400 text-xs mt-0.5">오늘 14:32 · 수아 님이 결제</p>
+              </div>
+              <span class="text-red-500 font-bold text-sm">-32,000원</span>
+            </div>
+
+            <div class="h-px bg-gray-50 mx-1"></div>
+
+            <!-- TX 2: Deposit -->
+            <div class="flex items-center gap-3">
+              <div class="tx-icon bg-blue-50">
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-1.5">
+                  <p class="text-gray-800 text-sm font-semibold">가상계좌 입금</p>
+                  <span class="bg-blue-50 text-blue-500 text-xs px-2 py-0.5 rounded-full font-medium">입금</span>
+                </div>
+                <p class="text-gray-400 text-xs mt-0.5">오늘 11:05 · 수아 님 입금 완료</p>
+              </div>
+              <span class="text-blue-600 font-bold text-sm">+60,000원</span>
+            </div>
+
+            <div class="h-px bg-gray-50 mx-1"></div>
+
+            <!-- TX 3: QR Payment -->
+            <div class="flex items-center gap-3">
+              <div class="tx-icon bg-red-50">
+                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12v.01M12 4H4v8h8V4zM4 16h4v4H4v-4zm12-12h4v4h-4V4z"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-1.5">
+                  <p class="text-gray-800 text-sm font-semibold">QR 결제</p>
+                  <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full">식당</span>
+                </div>
+                <p class="text-gray-400 text-xs mt-0.5">어제 19:14 · 민준 님이 결제</p>
+              </div>
+              <span class="text-red-500 font-bold text-sm">-85,000원</span>
+            </div>
+
+            <div class="h-px bg-gray-50 mx-1"></div>
+
+            <!-- TX 4: Deposit -->
+            <div class="flex items-center gap-3">
+              <div class="tx-icon bg-blue-50">
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-1.5">
+                  <p class="text-gray-800 text-sm font-semibold">가상계좌 입금</p>
+                  <span class="bg-blue-50 text-blue-500 text-xs px-2 py-0.5 rounded-full font-medium">입금</span>
+                </div>
+                <p class="text-gray-400 text-xs mt-0.5">어제 10:22 · 민준 님 입금 완료</p>
+              </div>
+              <span class="text-blue-600 font-bold text-sm">+60,000원</span>
+            </div>
+
+            <div class="h-px bg-gray-50 mx-1"></div>
+
+            <!-- TX 5: Escrow created -->
+            <div class="flex items-center gap-3">
+              <div class="tx-icon bg-purple-50">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-1.5">
+                  <p class="text-gray-800 text-sm font-semibold">모임 생성</p>
+                  <span class="bg-purple-50 text-purple-500 text-xs px-2 py-0.5 rounded-full">에스크로</span>
+                </div>
+                <p class="text-gray-400 text-xs mt-0.5">3일 전 · 대학 친구들 MT 모임 개설</p>
+              </div>
+              <span class="text-gray-400 font-medium text-sm">—</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── MY OTHER GROUPS ── -->
+        <div class="bg-white rounded-3xl p-5 card-shadow">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-gray-900 font-bold text-sm">참여 중인 모임</span>
+            <button class="text-blue-500 text-xs font-semibold">+ 새 모임</button>
+          </div>
+          <div class="space-y-3">
+            <!-- Group 1 -->
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-400 to-orange-400 flex items-center justify-center text-white text-lg">🍻</div>
+              <div class="flex-1">
+                <p class="text-gray-800 text-sm font-semibold">취업 축하 파티</p>
+                <p class="text-gray-400 text-xs mt-0.5">4명 참여 · 240,000원 적립</p>
+              </div>
+              <div class="text-right">
+                <span class="badge-pending text-xs px-2 py-0.5 rounded-full font-medium">대기중</span>
+              </div>
+            </div>
+            <!-- Group 2 -->
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-green-400 to-teal-400 flex items-center justify-center text-white text-lg">🎾</div>
+              <div class="flex-1">
+                <p class="text-gray-800 text-sm font-semibold">테니스 동아리</p>
+                <p class="text-gray-400 text-xs mt-0.5">6명 참여 · 120,000원 적립</p>
+              </div>
+              <div class="text-right">
+                <span class="badge-live text-xs px-2 py-0.5 rounded-full font-medium">● 진행중</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- bottom padding for nav -->
+        <div class="h-4"></div>
+      </div>
+    </div>
+
+    <!-- ──────────── BOTTOM NAVIGATION ──────────── -->
+    <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-2 py-2 z-50"
+         style="box-shadow: 0 -4px 20px rgba(0,0,0,0.06);">
+      <div class="flex items-center justify-around">
+
+        <!-- Home (active) -->
+        <button class="nav-active flex flex-col items-center gap-1 px-4 py-1.5 relative">
+          <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-blue-500 rounded-full"></div>
+          <svg class="w-6 h-6" fill="none" stroke="#0052FF" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          <span class="text-xs font-semibold text-blue-600">홈</span>
+        </button>
+
+        <!-- QR (center, elevated) -->
+        <button class="flex flex-col items-center -mt-6">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-200">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12v.01M12 4H4v8h8V4zM4 16h4v4H4v-4zm12-12h4v4h-4V4z"/>
+            </svg>
+          </div>
+          <span class="text-xs font-medium text-gray-500 mt-1">QR 결제</span>
+        </button>
+
+        <!-- Settlement -->
+        <button class="flex flex-col items-center gap-1 px-4 py-1.5">
+          <svg class="w-6 h-6" fill="none" stroke="#9CA3AF" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+          </svg>
+          <span class="text-xs font-medium text-gray-400">정산 내역</span>
+        </button>
+
+        <!-- My Info -->
+        <button class="flex flex-col items-center gap-1 px-4 py-1.5">
+          <svg class="w-6 h-6" fill="none" stroke="#9CA3AF" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          <span class="text-xs font-medium text-gray-400">내 정보</span>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

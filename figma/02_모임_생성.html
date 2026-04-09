@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>크레딧-N | 새 모임 만들기</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+* {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background: #F0F4FF;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.phone-frame {
+  width: 390px;
+  min-height: 844px;
+  background: #F0F4FF;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Link Score Gauge ── */
+.gauge-container {
+  position: relative;
+  width: 100px;
+  height: 56px;
+  overflow: hidden;
+}
+
+.gauge-bg {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 10px solid rgba(255, 255, 255, 0.25);
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  transform: rotate(-45deg);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.gauge-fill {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 10px solid transparent;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  transform: rotate(-45deg) rotate(calc(var(--score-deg, 0deg)));
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 1s ease;
+}
+
+/* ── Progress Bar Shimmer ── */
+.progress-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  to { left: 150%; }
+}
+
+/* ── QR Button Pulse ── */
+.qr-btn-outer {
+  position: relative;
+}
+
+.qr-btn-outer::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  background: rgba(0, 82, 255, 0.15);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); opacity: 0.7; }
+  70%  { transform: scale(1.08); opacity: 0; }
+  100% { transform: scale(1.08); opacity: 0; }
+}
+
+/* ── Card Shadows ── */
+.card-shadow    { box-shadow: 0 4px 24px rgba(0, 82, 255, 0.10); }
+.card-shadow-sm { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); }
+
+/* ── Escrow Card Gradient ── */
+.escrow-card {
+  background: linear-gradient(135deg, #0052FF 0%, #1A6BFF 50%, #4D94FF 100%);
+}
+
+/* ── Score Color Stops ── */
+.score-excellent { color: #00C27A; }
+.score-good      { color: #0052FF; }
+.score-fair      { color: #FF8C00; }
+
+/* ── Bottom Nav Active State ── */
+.nav-active svg  { stroke: #0052FF; }
+.nav-active span { color: #0052FF; font-weight: 600; }
+
+/* ── Transaction Icon ── */
+.tx-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Scrollable Content Area ── */
+.scroll-area {
+  height: calc(844px - 72px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.scroll-area::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Status Badges ── */
+.badge-live {
+  background: rgba(0, 194, 122, 0.12);
+  color: #00A864;
+}
+
+.badge-pending {
+  background: rgba(255, 140, 0, 0.12);
+  color: #D97706;
+}
+
+/* ════════════════════════════════
+   Escrow Detail Page
+   ════════════════════════════════ */
+
+/* ── 입금 완료 행 ── */
+.member-row-paid {
+  background: #fff;
+  border: 1.5px solid #E8EFFF;
+}
+
+/* ── 미입금 행 강조 ── */
+.member-row-unpaid {
+  background: #FFF8F0;
+  border: 1.5px solid #FFE4B5;
+  position: relative;
+}
+.member-row-unpaid::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: #FF8C00;
+  border-radius: 3px 0 0 3px;
+}
+
+/* ── 독촉 버튼 ripple ── */
+.nudge-btn {
+  position: relative;
+  overflow: hidden;
+}
+.nudge-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 140, 0, 0.15);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.nudge-btn:active::after { opacity: 1; }
+
+/* ── 전체 독촉 버튼 pulse ── */
+.nudge-all-btn {
+  position: relative;
+}
+.nudge-all-btn::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: rgba(255, 140, 0, 0.12);
+  animation: nudge-pulse 2.5s ease-out infinite;
+}
+@keyframes nudge-pulse {
+  0%   { transform: scale(0.96); opacity: 0.8; }
+  70%  { transform: scale(1.06); opacity: 0; }
+  100% { transform: scale(1.06); opacity: 0; }
+}
+
+/* ── 총금액 강조 그라디언트 텍스트 ── */
+.amount-display {
+  background: linear-gradient(135deg, #0052FF, #4D94FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── 가상계좌 복사 버튼 ── */
+.copy-btn {
+  transition: all 0.2s;
+}
+.copy-btn.copied {
+  background: #E8F5E9;
+  color: #00A864;
+  border-color: #00A864;
+}
+
+/* ── 섹션 레이블 ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+}
+
+/* ── 링크 스코어 영향 배지 ── */
+.score-impact-badge {
+  background: linear-gradient(135deg, #FFF0E0, #FFE4B5);
+  border: 1px solid #FFD580;
+  color: #B45309;
+}
+
+/* ── 에스크로 상세 헤더 그라디언트 ── */
+.detail-header {
+  background: linear-gradient(160deg, #003ED4 0%, #0052FF 40%, #2B7FFF 100%);
+}
+
+/* ════════════════════════════════
+   QR Payment Page
+   ════════════════════════════════ */
+
+/* ── 페이지 배경 그라디언트 ── */
+.qr-page-bg {
+  background: linear-gradient(172deg, #00176A 0%, #003ACC 32%, #0052FF 62%, #2B7FFF 100%);
+}
+
+/* ── 스캔 라인 ── */
+@keyframes scan-move {
+  0%   { top: 1%;  opacity: 0; }
+  6%   { opacity: 1; }
+  50%  { top: 91%; }
+  94%  { opacity: 1; }
+  100% { top: 1%;  opacity: 0; }
+}
+.scan-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #0052FF 25%, #93C5FD 50%, #0052FF 75%, transparent 100%);
+  box-shadow: 0 0 10px 2px rgba(0, 82, 255, 0.55), 0 0 24px 4px rgba(0, 82, 255, 0.25);
+  animation: scan-move 2.6s ease-in-out infinite;
+}
+
+/* ── 코너 브라켓 ── */
+.qr-brk { position: absolute; width: 22px; height: 22px; }
+.qr-brk-tl { top: -1px; left: -1px;  border-top: 3px solid #0052FF; border-left: 3px solid #0052FF;  border-radius: 5px 0 0 0; }
+.qr-brk-tr { top: -1px; right: -1px; border-top: 3px solid #0052FF; border-right: 3px solid #0052FF; border-radius: 0 5px 0 0; }
+.qr-brk-bl { bottom: -1px; left: -1px;  border-bottom: 3px solid #0052FF; border-left: 3px solid #0052FF;  border-radius: 0 0 0 5px; }
+.qr-brk-br { bottom: -1px; right: -1px; border-bottom: 3px solid #0052FF; border-right: 3px solid #0052FF; border-radius: 0 0 5px 0; }
+
+/* ── QR 카드 등장 ── */
+@keyframes qr-card-in { from { opacity: 0; transform: scale(0.96) translateY(6px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.qr-card-appear { animation: qr-card-in 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+/* ── 새로고침 아이콘 스핀 ── */
+@keyframes spin-once { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.icon-spin { animation: spin-once 0.5s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+/* ── 타이머 긴급 깜빡임 ── */
+@keyframes urgent-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.timer-urgent { animation: urgent-blink 0.75s ease-in-out infinite; }
+
+/* ── 가이드 바텀 시트 오버레이 ── */
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sheet-up { animation: sheet-up 0.32s cubic-bezier(0.34,1.2,0.64,1) forwards; }
+
+/* ── 인증 코드 박스 등장 ── */
+@keyframes digit-pop { from { opacity: 0; transform: scale(0.8) translateY(4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.digit-box { animation: digit-pop 0.25s ease-out forwards; }
+
+/* ── 진행 단계 스텝 ── */
+.step-active            { background: #0052FF; color: #fff; }
+.step-done              { background: #E8EFFF; color: #0052FF; }
+.step-inactive          { background: #F3F4F6; color: #9CA3AF; }
+.step-connector-done    { background: #0052FF; }
+.step-connector-inactive{ background: #E5E7EB; }
+
+/* ════════════════════════════════
+   Settlement Report Page
+   ════════════════════════════════ */
+
+/* ── 체크 아이콘 등장 애니메이션 ── */
+@keyframes check-scale-in {
+  0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+  60%  { transform: scale(1.2) rotate(4deg); opacity: 1; }
+  80%  { transform: scale(0.92) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.check-pop-anim { animation: check-scale-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both; }
+
+/* ── 컨페티 조각 ── */
+@keyframes fall-a { 0%{transform:translateY(-8px) rotate(0deg);opacity:1}   100%{transform:translateY(130px) rotate(200deg);opacity:0} }
+@keyframes fall-b { 0%{transform:translateY(-8px) rotate(45deg);opacity:1}  100%{transform:translateY(110px) rotate(-240deg);opacity:0} }
+@keyframes fall-c { 0%{transform:translateY(-8px) rotate(20deg);opacity:1}  100%{transform:translateY(150px) rotate(320deg);opacity:0} }
+.conf { position:absolute; border-radius:2px; animation-fill-mode:both; }
+.conf-a1 { animation: fall-a 2.0s ease-in 0.1s infinite; }
+.conf-a2 { animation: fall-a 1.7s ease-in 0.6s infinite; }
+.conf-b1 { animation: fall-b 2.2s ease-in 0.3s infinite; }
+.conf-b2 { animation: fall-b 1.9s ease-in 0.8s infinite; }
+.conf-c1 { animation: fall-c 1.8s ease-in 0.2s infinite; }
+.conf-c2 { animation: fall-c 2.1s ease-in 0.5s infinite; }
+
+/* ── 영수증 절취선 상단 ── */
+.receipt-tear-top {
+  height: 15px;
+  background-color: #0044DD;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='15'%3E%3Cpath d='M6.5%2C0 L0%2C15 L13%2C15 Z' fill='%23FAF9F7'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+}
+
+/* ── 환급금 등장 애니메이션 ── */
+@keyframes refund-entrance {
+  0%   { transform: scale(0.75); opacity: 0; }
+  65%  { transform: scale(1.06); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+.refund-pop { animation: refund-entrance 0.65s cubic-bezier(0.34, 1.4, 0.64, 1) 0.6s both; }
+
+/* ── 링크 스코어 바 증가 ── */
+@keyframes score-grow-in { from { width: 72.7%; } to { width: 74.2%; } }
+.score-grow-anim {
+  width: 72.7%;
+  animation: score-grow-in 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
+}
+
+/* ── 정산완료 스탬프 ── */
+.settled-stamp {
+  border: 2.5px solid rgba(0, 82, 255, 0.5);
+  border-radius: 50%;
+  width: 58px; height: 58px;
+  display: flex; align-items: center; justify-content: center;
+  transform: rotate(-14deg);
+  flex-shrink: 0;
+}
+
+/* ── 영수증 구분선 ── */
+.receipt-divider       { border-top: 1.5px dashed #E2E0DA; margin: 0; }
+.receipt-divider-bold  { border-top: 2px   dashed #C8C5BD; margin: 0; }
+
+/* ── 넷팅 플로우 노드 ── */
+.netting-node {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════
+   Create Group Page
+   ════════════════════════════════ */
+
+/* ── 폼 인풋 ── */
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1.5px solid #E5E7EB;
+  background: #F9FAFB;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.form-input:focus {
+  border-color: #0052FF;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.1);
+}
+.form-input::placeholder { color: #D1D5DB; }
+
+/* ── 선택 칩 ── */
+.form-chip {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1.5px solid #E5E7EB;
+  background: #F9FAFB;
+  color: #6B7280;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.form-chip:active { transform: scale(0.95); }
+.form-chip-active {
+  border-color: #0052FF;
+  background: #EEF2FF;
+  color: #0052FF;
+}
+
+/* ── 모임 유형 이모지 칩 ── */
+.emoji-chip {
+  width: 56px; height: 60px;
+  border-radius: 16px;
+  border: 1.5px solid #E5E7EB;
+  background: #F9FAFB;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.emoji-chip:active { transform: scale(0.94); }
+.emoji-chip-active {
+  border-color: #0052FF;
+  background: #EEF2FF;
+  box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.1);
+}
+
+/* ── 초대 코드 글자 박스 ── */
+@keyframes code-pop {
+  from { opacity: 0; transform: scale(0.7) translateY(6px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0);   }
+}
+.invite-char { animation: code-pop 0.22s cubic-bezier(0.34,1.5,0.64,1) forwards; }
+
+/* ── 버퍼 경고 배너 ── */
+.buffer-warn {
+  background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+  border: 1px solid #FDE68A;
+}
+
+/* ── 예상 금액 요약 카드 ── */
+.total-preview {
+  background: linear-gradient(135deg, #EEF2FF, #DBEAFE);
+  border: 1.5px solid #BFDBFE;
+}
+
+/* ── 인풋 금액 단위 래퍼 ── */
+.amount-input-wrap { position: relative; }
+.amount-input-wrap .unit {
+  position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%);
+  color: #6B7280; font-weight: 600; font-size: 15px;
+  pointer-events: none;
+}
+.amount-input-wrap .form-input { padding-right: 40px; }
+
+/* ════════════════════════════════
+   Link Score Insights Page
+   ════════════════════════════════ */
+
+/* ── 다크 헤더 배경 ── */
+.link-score-bg {
+  background: linear-gradient(165deg, #050C1A 0%, #091526 45%, #0C1C42 100%);
+}
+
+/* ── 점수 링 애니메이션 (r=96, C≈603) ── */
+@keyframes ring-score-in {
+  from { stroke-dashoffset: 604; }
+  to   { stroke-dashoffset: 154; }
+}
+.ring-score-animate {
+  stroke-dasharray: 604;
+  stroke-dashoffset: 604;
+  animation: ring-score-in 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+}
+
+/* ── 다크 스탯 미니 카드 ── */
+.dark-stat-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px;
+  padding: 14px 12px;
+  text-align: center;
+}
+
+/* ── 스탯 바 채우기 애니메이션 ── */
+@keyframes stat-bar-in { from { width: 0 !important; } }
+.stat-bar-in { animation: stat-bar-in 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both; }
+
+/* ── 차트 라인 등장 ── */
+@keyframes chart-line-in {
+  from { stroke-dashoffset: 800; }
+  to   { stroke-dashoffset: 0; }
+}
+.chart-line-animate {
+  stroke-dasharray: 800;
+  stroke-dashoffset: 800;
+  animation: chart-line-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+}
+
+/* ── 인사이트 카드 아이콘 배경 ── */
+.insight-positive { background: linear-gradient(135deg,#DCFCE7,#BBF7D0); }
+.insight-blue     { background: linear-gradient(135deg,#DBEAFE,#BFDBFE); }
+.insight-amber    { background: linear-gradient(135deg,#FEF3C7,#FDE68A); }
+
+/* ── 등급 그라디언트 바 ── */
+.grade-gradient-bar {
+  background: linear-gradient(90deg,
+    #CD7F32  0%,  #CD7F32  18%,
+    #C0C0C0  18%, #C0C0C0  36%,
+    #FFD700  36%, #FFD700  54%,
+    #E5E4E2  54%, #E5E4E2  72%,
+    #B9F2FF  72%, #B9F2FF  100%
+  );
+}
+
+/* ── 레이더 차트 데이터 폴리곤 ── */
+@keyframes radar-fill-in {
+  from { opacity: 0; transform: scale(0.4); transform-origin: 100px 100px; }
+  to   { opacity: 1; transform: scale(1); }
+}
+.radar-polygon { animation: radar-fill-in 1s cubic-bezier(0.34,1.3,0.64,1) 0.8s both; }
+
+</style>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="py-8">
+
+<div class="mx-auto relative"
+     style="width:390px; min-height:844px; background:#F0F4FF; overflow-x:hidden;
+            font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;">
+
+  <!-- ══════════════════════════════════════════════
+       HERO HEADER
+  ══════════════════════════════════════════════ -->
+  <div class="detail-header relative overflow-hidden px-5" style="padding-bottom:36px;">
+
+    <!-- Decorative circles -->
+    <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-white opacity-[0.05]"></div>
+    <div class="absolute top-20 -right-2 w-24 h-24 rounded-full bg-white opacity-[0.04]"></div>
+
+    <!-- Status bar -->
+    <div class="flex items-center justify-between pt-3 pb-1 relative z-10">
+      <span class="text-xs font-semibold text-white opacity-75">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <rect x="0"    y="6" width="3" height="6"  rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="4.5"  y="4" width="3" height="8"  rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="9"    y="2" width="3" height="10" rx="1" fill="white" fill-opacity=".75"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" fill-opacity=".75"/>
+        </svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 9.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z" fill="white" fill-opacity=".75"/>
+          <path d="M4.5 6.8A4.97 4.97 0 018 5.5c1.38 0 2.63.56 3.5 1.3"  stroke="white" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M1.5 3.8A8.97 8.97 0 018 1.5c2.48 0 4.73 1 6.36 2.63" stroke="white" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <div class="w-6 h-3 rounded-sm p-px flex" style="border:1px solid rgba(255,255,255,.6);">
+          <div class="flex-1 rounded-sm" style="background:rgba(255,255,255,.7);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <div class="flex items-center justify-between py-3 relative z-10">
+      <a href="index.html"
+         class="w-10 h-10 rounded-2xl flex items-center justify-center"
+         style="background:rgba(255,255,255,.15);">
+        <i data-lucide="arrow-left" style="width:20px;height:20px;color:white;stroke-width:2.5;"></i>
+      </a>
+      <div class="text-center">
+        <h1 class="text-white font-bold text-base">새 모임 만들기</h1>
+        <p class="text-xs mt-0.5" style="color:rgba(147,197,253,.9);">에스크로 가상계좌 자동 발급</p>
+      </div>
+      <button class="w-10 h-10 rounded-2xl flex items-center justify-center"
+              style="background:rgba(255,255,255,.15);">
+        <i data-lucide="help-circle" style="width:18px;height:18px;color:white;"></i>
+      </button>
+    </div>
+
+    <!-- Step indicator -->
+    <div class="flex items-center justify-center gap-0 relative z-10 mt-1">
+      <div class="flex items-center gap-1.5">
+        <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+          <span class="text-blue-600 text-xs font-extrabold">1</span>
+        </div>
+        <span class="text-white text-xs font-semibold">기본 정보</span>
+      </div>
+      <div class="w-8 h-px mx-2" style="background:rgba(255,255,255,.35);"></div>
+      <div class="flex items-center gap-1.5">
+        <div class="w-6 h-6 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.25);">
+          <span class="text-white text-xs font-bold">2</span>
+        </div>
+        <span class="text-xs font-medium" style="color:rgba(255,255,255,.7);">에스크로</span>
+      </div>
+      <div class="w-8 h-px mx-2" style="background:rgba(255,255,255,.35);"></div>
+      <div class="flex items-center gap-1.5">
+        <div class="w-6 h-6 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.25);">
+          <span class="text-white text-xs font-bold">3</span>
+        </div>
+        <span class="text-xs font-medium" style="color:rgba(255,255,255,.7);">초대</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCROLLABLE FORM AREA
+  ══════════════════════════════════════════════ -->
+  <div class="px-4 space-y-3 mt-4 pb-36">
+
+    <!-- ── CARD 1: 기본 정보 ── -->
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="pencil" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">기본 정보</span>
+      </div>
+
+      <!-- Meeting type emojis -->
+      <div class="mb-4">
+        <p class="text-xs font-semibold text-gray-500 mb-2.5">모임 유형</p>
+        <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;">
+          <button class="emoji-chip emoji-chip-active" onclick="selectEmoji(this, '🍻')">
+            <span class="text-xl">🍻</span>
+            <span class="text-xs font-medium text-blue-600" style="font-size:10px;">회식</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '🏕️')">
+            <span class="text-xl">🏕️</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">여행</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '🎾')">
+            <span class="text-xl">🎾</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">스포츠</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '🎂')">
+            <span class="text-xl">🎂</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">파티</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '🎮')">
+            <span class="text-xl">🎮</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">게임</span>
+          </button>
+          <button class="emoji-chip" onclick="selectEmoji(this, '✈️')">
+            <span class="text-xl">✈️</span>
+            <span class="text-xs font-medium text-gray-500" style="font-size:10px;">기타</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Meeting name -->
+      <div class="mb-3">
+        <label class="text-xs font-semibold text-gray-500 mb-2 block">모임 이름 <span class="text-red-400">*</span></label>
+        <input id="meetingName"
+               type="text"
+               class="form-input"
+               placeholder="예: 주말 동아리 회식"
+               maxlength="30"
+               oninput="updateCharCount(this)" />
+        <div class="flex justify-end mt-1">
+          <span id="charCount" class="text-xs text-gray-300">0 / 30</span>
+        </div>
+      </div>
+
+      <!-- Date + Time row -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-2 block">날짜 <span class="text-red-400">*</span></label>
+          <input type="date"
+                 class="form-input text-sm"
+                 value="2025-03-22"
+                 style="color-scheme:light;" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 mb-2 block">시간</label>
+          <input type="time"
+                 class="form-input text-sm"
+                 value="19:00"
+                 style="color-scheme:light;" />
+        </div>
+      </div>
+
+      <!-- Location (optional) -->
+      <div class="mt-3">
+        <label class="text-xs font-semibold text-gray-500 mb-2 block">장소 (선택)</label>
+        <div class="relative">
+          <input type="text"
+                 class="form-input"
+                 placeholder="예: 강남역 2번 출구 근처"
+                 style="padding-left:40px;" />
+          <i data-lucide="map-pin" style="width:16px;height:16px;color:#9CA3AF;position:absolute;left:14px;top:50%;transform:translateY(-50%);"></i>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ── CARD 2: 에스크로 설정 ── -->
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="wallet" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">에스크로 설정</span>
+      </div>
+
+      <!-- 1인당 예치금 -->
+      <div class="mb-4">
+        <label class="text-xs font-semibold text-gray-500 mb-2 block">1인당 예치금 <span class="text-red-400">*</span></label>
+        <div class="amount-input-wrap">
+          <input id="depositAmount"
+                 type="text"
+                 class="form-input"
+                 placeholder="0"
+                 inputmode="numeric"
+                 oninput="formatAmountInput(this); updateTotal();" />
+          <span class="unit">원</span>
+        </div>
+
+        <!-- Quick select -->
+        <div class="flex gap-2 mt-2.5 flex-wrap">
+          <button class="form-chip" onclick="setAmount(20000, this)">2만원</button>
+          <button class="form-chip" onclick="setAmount(30000, this)">3만원</button>
+          <button class="form-chip" onclick="setAmount(50000, this)">5만원</button>
+          <button class="form-chip" onclick="setAmount(100000, this)">10만원</button>
+        </div>
+      </div>
+
+      <!-- 참여 인원 목표 -->
+      <div class="mb-4">
+        <label class="text-xs font-semibold text-gray-500 mb-2 block">참여 인원 목표</label>
+        <div class="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100">
+          <button onclick="adjustPeople(-1)"
+                  class="w-9 h-9 rounded-xl bg-white flex items-center justify-center card-shadow-sm transition-colors hover:bg-blue-50"
+                  style="border:1px solid #E5E7EB;">
+            <i data-lucide="minus" style="width:16px;height:16px;color:#374151;stroke-width:2.5;"></i>
+          </button>
+          <div class="text-center">
+            <span id="peopleCount" class="text-gray-900 font-extrabold text-2xl">5</span>
+            <span class="text-gray-500 text-sm font-medium ml-1">명</span>
+          </div>
+          <button onclick="adjustPeople(1)"
+                  class="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center transition-colors hover:bg-blue-600">
+            <i data-lucide="plus" style="width:16px;height:16px;color:white;stroke-width:2.5;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 예치금 버퍼 -->
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-xs font-semibold text-gray-500">예치금 버퍼 (Buffer)</label>
+          <span class="text-xs font-medium text-orange-500 flex items-center gap-1">
+            <i data-lucide="info" style="width:11px;height:11px;"></i>
+            5~10% 권장
+          </span>
+        </div>
+
+        <!-- Buffer chips -->
+        <div class="flex gap-2 mb-3">
+          <button class="form-chip flex-1 text-center" onclick="selectBuffer(5, this)">
+            <span class="block font-extrabold text-base">5%</span>
+            <span class="block text-xs opacity-70 mt-0.5">보수적</span>
+          </button>
+          <button class="form-chip form-chip-active flex-1 text-center" onclick="selectBuffer(7, this)">
+            <span class="block font-extrabold text-base">7%</span>
+            <span class="block text-xs opacity-70 mt-0.5">권장 ✓</span>
+          </button>
+          <button class="form-chip flex-1 text-center" onclick="selectBuffer(10, this)">
+            <span class="block font-extrabold text-base">10%</span>
+            <span class="block text-xs opacity-70 mt-0.5">여유있게</span>
+          </button>
+          <button class="form-chip flex-1 text-center" onclick="selectBuffer(0, this)" id="customBufferBtn">
+            <span class="block font-extrabold text-base">직접</span>
+            <span class="block text-xs opacity-70 mt-0.5">입력</span>
+          </button>
+        </div>
+
+        <!-- Buffer warning -->
+        <div class="buffer-warn rounded-2xl px-3.5 py-3 flex items-start gap-2.5">
+          <i data-lucide="alert-triangle" style="width:14px;height:14px;color:#D97706;flex-shrink:0;margin-top:1px;"></i>
+          <p class="text-xs leading-relaxed" style="color:#92400E;">
+            결제가 예치금을 초과할 경우를 대비한 <strong>추가 여유 자금</strong>이에요.
+            모임 종료 후 미사용 버퍼는 전액 환급됩니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 예상 총 에스크로 계산 -->
+      <div id="totalPreview" class="total-preview rounded-2xl px-4 py-4">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-blue-700 text-xs font-semibold">예상 에스크로 계산</span>
+          <i data-lucide="calculator" style="width:14px;height:14px;color:#3B82F6;"></i>
+        </div>
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between" style="color:#4B5563;">
+            <span>1인 예치금</span>
+            <span id="calcDeposit" class="font-semibold text-gray-800">—</span>
+          </div>
+          <div class="flex justify-between" style="color:#4B5563;">
+            <span>참여 인원</span>
+            <span id="calcPeople" class="font-semibold text-gray-800">5명</span>
+          </div>
+          <div class="flex justify-between" style="color:#4B5563;">
+            <span>버퍼 (<span id="calcBufferPct">7</span>%)</span>
+            <span id="calcBuffer" class="font-semibold text-gray-800">—</span>
+          </div>
+        </div>
+        <div class="border-t border-blue-200 mt-3 pt-3 flex justify-between items-center">
+          <span class="text-blue-800 text-sm font-bold">총 에스크로 목표</span>
+          <span id="calcTotal" class="text-blue-700 font-extrabold text-xl">—원</span>
+        </div>
+        <p class="text-blue-400 text-xs mt-1.5 text-right">= 예치금 × 인원 × (1 + 버퍼)</p>
+      </div>
+
+    </div>
+
+
+    <!-- ── CARD 3: 가상계좌 발급 프리뷰 ── -->
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="landmark" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">가상계좌 발급 프리뷰</span>
+        <span class="ml-auto badge-live text-xs px-2.5 py-1 rounded-full font-semibold">자동 발급</span>
+      </div>
+
+      <!-- PortOne notice -->
+      <div class="rounded-2xl px-4 py-4 mb-4 flex items-start gap-3"
+           style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF);border:1px solid #C7D2FE;">
+        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0 card-shadow-sm">
+          <!-- PortOne logo placeholder -->
+          <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs font-black text-white"
+               style="background:linear-gradient(135deg,#6366F1,#8B5CF6);">P</div>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5 mb-1">
+            <span class="text-indigo-700 text-xs font-extrabold">PortOne</span>
+            <span class="text-indigo-400 text-xs">연동</span>
+          </div>
+          <p class="text-gray-700 text-xs leading-relaxed">
+            모임 생성 시 <strong>PortOne</strong>을 통해 전용 가상계좌가
+            <span class="text-indigo-600 font-bold">즉시 발급</span>됩니다.
+            별도 서류나 대기 없이 자동으로 처리돼요.
+          </p>
+        </div>
+      </div>
+
+      <!-- Account preview (masked) -->
+      <div class="rounded-2xl px-4 py-3.5 border border-dashed border-gray-200 bg-gray-50">
+        <p class="text-gray-400 text-xs font-medium mb-2.5 text-center">발급 예시</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-xs font-extrabold">T</span>
+          </div>
+          <div class="flex-1">
+            <p class="text-gray-500 text-xs font-medium">토스뱅크 (모임 전용)</p>
+            <p class="text-gray-800 font-bold text-sm mt-0.5 tracking-widest">1000 - ???? - ????</p>
+          </div>
+          <div class="flex flex-col items-end gap-1">
+            <span class="text-gray-300 text-xs">생성 후 확정</span>
+            <div class="flex gap-0.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-gray-200 animate-pulse"></div>
+              <div class="w-1.5 h-1.5 rounded-full bg-gray-200 animate-pulse" style="animation-delay:.2s"></div>
+              <div class="w-1.5 h-1.5 rounded-full bg-gray-200 animate-pulse" style="animation-delay:.4s"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features list -->
+      <div class="mt-4 space-y-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check" style="width:11px;height:11px;color:#00A864;stroke-width:3;"></i>
+          </div>
+          <p class="text-gray-600 text-xs">입금 즉시 에스크로에 자동 반영</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check" style="width:11px;height:11px;color:#00A864;stroke-width:3;"></i>
+          </div>
+          <p class="text-gray-600 text-xs">QR 결제 시 가상계좌 잔액에서 직접 차감</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check" style="width:11px;height:11px;color:#00A864;stroke-width:3;"></i>
+          </div>
+          <p class="text-gray-600 text-xs">모임 종료 후 잔액 넷팅 알고리즘으로 자동 환급</p>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ── CARD 4: 친구 초대 ── -->
+    <div class="bg-white rounded-3xl p-5 card-shadow">
+
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="users" style="width:15px;height:15px;color:#0052FF;"></i>
+        </div>
+        <span class="text-gray-900 font-bold text-sm">친구 초대</span>
+        <span class="ml-auto text-gray-400 text-xs">모임 생성 후에도 가능</span>
+      </div>
+
+      <!-- Invite code display -->
+      <div class="mb-4">
+        <p class="text-xs font-semibold text-gray-500 mb-3">참여 코드 (미리보기)</p>
+        <div class="flex items-center justify-center gap-1.5 mb-3" id="inviteCodeDisplay">
+          <!-- Rendered by JS -->
+        </div>
+        <div class="flex items-center justify-center gap-2">
+          <button onclick="copyCode()"
+                  id="copyCodeBtn"
+                  class="flex items-center gap-1.5 text-blue-600 text-xs font-bold bg-blue-50 px-4 py-2 rounded-xl transition-colors hover:bg-blue-100">
+            <i data-lucide="copy" style="width:13px;height:13px;"></i>
+            코드 복사
+          </button>
+          <button onclick="regenerateCode()"
+                  class="flex items-center gap-1.5 text-gray-500 text-xs font-semibold bg-gray-100 px-4 py-2 rounded-xl transition-colors hover:bg-gray-200">
+            <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i>
+            재생성
+          </button>
+        </div>
+        <p class="text-gray-400 text-xs text-center mt-2">
+          6자리 코드로 친구가 모임에 참여할 수 있어요
+        </p>
+      </div>
+
+      <div class="border-t border-gray-100 pt-4">
+        <p class="text-xs font-semibold text-gray-500 mb-3">공유 방법</p>
+
+        <div class="space-y-2.5">
+          <!-- KakaoTalk -->
+          <button onclick="shareKakao()"
+                  class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-colors hover:opacity-90 active:scale-98"
+                  style="background:#FFEB00;">
+            <!-- Kakao icon -->
+            <div class="w-9 h-9 rounded-xl bg-black bg-opacity-10 flex items-center justify-center flex-shrink-0">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 2C5.58 2 2 4.91 2 8.5c0 2.27 1.39 4.27 3.5 5.45L4.5 17l3.8-2.08c.55.08 1.12.12 1.7.12 4.42 0 8-2.91 8-6.5S14.42 2 10 2z" fill="#3C1E1E"/>
+              </svg>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="font-bold text-sm" style="color:#3C1E1E;">카카오톡으로 공유</p>
+              <p class="text-xs mt-0.5" style="color:#5C3C3C;">친구들에게 초대장을 보내요</p>
+            </div>
+            <i data-lucide="chevron-right" style="width:16px;height:16px;color:#3C1E1E;opacity:.5;"></i>
+          </button>
+
+          <!-- Link copy -->
+          <button onclick="copyInviteLink()"
+                  class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-gray-50 border border-gray-100 transition-colors hover:bg-gray-100">
+            <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 card-shadow-sm">
+              <i data-lucide="link-2" style="width:18px;height:18px;color:#0052FF;"></i>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="text-gray-800 font-bold text-sm">초대 링크 복사</p>
+              <p class="text-gray-400 text-xs mt-0.5" id="linkPreview">credit-n.app/join/------</p>
+            </div>
+            <i data-lucide="copy" style="width:15px;height:15px;color:#9CA3AF;"></i>
+          </button>
+
+          <!-- QR share -->
+          <button class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-gray-50 border border-gray-100 transition-colors hover:bg-gray-100">
+            <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 card-shadow-sm">
+              <i data-lucide="qr-code" style="width:18px;height:18px;color:#6B7280;"></i>
+            </div>
+            <div class="flex-1 text-left">
+              <p class="text-gray-800 font-bold text-sm">초대 QR 생성</p>
+              <p class="text-gray-400 text-xs mt-0.5">모임 생성 후 QR 코드 발급</p>
+            </div>
+            <span class="text-xs text-gray-300 font-medium">생성 후</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- end form area -->
+
+
+  <!-- ══════════════════════════════════════════════
+       BOTTOM CTA (fixed)
+  ══════════════════════════════════════════════ -->
+  <div class="absolute bottom-0 left-0 right-0 px-4 pb-6 pt-4"
+       style="background:linear-gradient(to top, #F0F4FF 75%, rgba(240,244,255,0) 100%);">
+
+    <!-- Summary pill -->
+    <div class="flex items-center justify-between px-4 py-2.5 rounded-2xl bg-white mb-3 card-shadow-sm">
+      <div class="flex items-center gap-2">
+        <span id="summaryEmoji" class="text-lg">🍻</span>
+        <span id="summaryName" class="text-gray-700 text-xs font-semibold truncate" style="max-width:120px;">모임 이름 입력 중...</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-gray-400 text-xs"><span id="summaryPeople">5</span>명</span>
+        <span class="text-gray-200">·</span>
+        <span class="text-blue-600 text-xs font-bold"><span id="summaryTotal">—</span>원</span>
+      </div>
+    </div>
+
+    <!-- CTA button -->
+    <button onclick="createGroup()"
+            id="createBtn"
+            class="w-full py-4 rounded-2xl font-extrabold text-base text-white flex items-center justify-center gap-2.5 transition-opacity hover:opacity-90 active:scale-98"
+            style="background:linear-gradient(90deg,#0038CC,#0052FF,#2B7FFF);box-shadow:0 10px 30px rgba(0,82,255,.4);">
+      <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
+      모임 만들기
+    </button>
+
+    <p class="text-center text-gray-400 text-xs mt-2.5">
+      생성 즉시 PortOne 가상계좌가 발급됩니다
+    </p>
+  </div>
+
+</div><!-- end phone frame -->
+
+
+<script>
+// ══════════════════════════════════════════════
+//  Init
+// ══════════════════════════════════════════════
+lucide.createIcons();
+
+let selectedEmoji   = '🍻';
+let depositAmount   = 0;
+let peopleCount     = 5;
+let bufferPct       = 7;
+let inviteCode      = '';
+
+// ── Generate invite code ──────────────────────
+function makeCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+}
+
+function renderCode(code) {
+  const el = document.getElementById('inviteCodeDisplay');
+  el.innerHTML = '';
+  [...code].forEach((ch, i) => {
+    if (i === 3) {
+      const sep = document.createElement('span');
+      sep.style.cssText = 'color:#D1D5DB;font-size:20px;font-weight:700;align-self:center;margin:0 2px;';
+      sep.textContent = '-';
+      el.appendChild(sep);
+    }
+    const box = document.createElement('div');
+    box.className = 'invite-char';
+    box.style.cssText = [
+      'width:38px;height:46px',
+      'background:linear-gradient(135deg,#EEF2FF,#E0E7FF)',
+      'border:1.5px solid #C7D2FE',
+      'border-radius:12px',
+      'display:flex;align-items:center;justify-content:center',
+      'font-size:20px;font-weight:800;color:#0052FF',
+      'font-family:monospace',
+      `animation-delay:${i * 45}ms`,
+    ].join(';');
+    box.textContent = ch;
+    el.appendChild(box);
+  });
+  // Update link preview
+  document.getElementById('linkPreview').textContent = `credit-n.app/join/${code}`;
+}
+
+inviteCode = makeCode();
+renderCode(inviteCode);
+
+
+// ══════════════════════════════════════════════
+//  Meeting type emoji
+// ══════════════════════════════════════════════
+function selectEmoji(btn, emoji) {
+  document.querySelectorAll('.emoji-chip').forEach(el => {
+    el.classList.remove('emoji-chip-active');
+    el.querySelector('span:last-child').classList.remove('text-blue-600');
+    el.querySelector('span:last-child').classList.add('text-gray-500');
+  });
+  btn.classList.add('emoji-chip-active');
+  btn.querySelector('span:last-child').classList.add('text-blue-600');
+  btn.querySelector('span:last-child').classList.remove('text-gray-500');
+  selectedEmoji = emoji;
+  document.getElementById('summaryEmoji').textContent = emoji;
+}
+
+
+// ══════════════════════════════════════════════
+//  Amount input
+// ══════════════════════════════════════════════
+function formatAmountInput(input) {
+  const raw = input.value.replace(/[^0-9]/g, '');
+  depositAmount = parseInt(raw) || 0;
+  input.value = depositAmount ? depositAmount.toLocaleString('ko-KR') : '';
+}
+
+function setAmount(amount, btn) {
+  document.querySelectorAll('.form-chip').forEach(el => {
+    if (['2만원','3만원','5만원','10만원'].includes(el.textContent.trim())) {
+      el.classList.remove('form-chip-active');
+    }
+  });
+  btn.classList.add('form-chip-active');
+  depositAmount = amount;
+  const input = document.getElementById('depositAmount');
+  input.value = amount.toLocaleString('ko-KR');
+  updateTotal();
+}
+
+
+// ══════════════════════════════════════════════
+//  People stepper
+// ══════════════════════════════════════════════
+function adjustPeople(delta) {
+  peopleCount = Math.max(2, Math.min(20, peopleCount + delta));
+  document.getElementById('peopleCount').textContent = peopleCount;
+  document.getElementById('summaryPeople').textContent = peopleCount;
+  document.getElementById('calcPeople').textContent = peopleCount + '명';
+  updateTotal();
+}
+
+
+// ══════════════════════════════════════════════
+//  Buffer selection
+// ══════════════════════════════════════════════
+function selectBuffer(pct, btn) {
+  document.querySelectorAll('.form-chip').forEach(el => {
+    if (['5%\n보수적','7%\n권장 ✓','10%\n여유있게','직접\n입력'].some(t =>
+      el.textContent.trim().replace(/\s+/g,' ').includes(t.replace(/\s+/g,' ').trim().split('\n')[0])
+    )) {
+      // check if it's a buffer chip by checking its textContent pattern
+    }
+  });
+  // Simpler: target all chips in the buffer section
+  btn.parentElement.querySelectorAll('.form-chip').forEach(el => el.classList.remove('form-chip-active'));
+  btn.classList.add('form-chip-active');
+  bufferPct = pct || 7;
+  document.getElementById('calcBufferPct').textContent = bufferPct;
+  updateTotal();
+}
+
+
+// ══════════════════════════════════════════════
+//  Total calculation
+// ══════════════════════════════════════════════
+function updateTotal() {
+  const calcDeposit = document.getElementById('calcDeposit');
+  const calcBuffer  = document.getElementById('calcBuffer');
+  const calcTotal   = document.getElementById('calcTotal');
+  const summaryTotal= document.getElementById('summaryTotal');
+
+  if (!depositAmount) {
+    calcDeposit.textContent = '—';
+    calcBuffer.textContent  = '—';
+    calcTotal.textContent   = '—';
+    summaryTotal.textContent = '—';
+    return;
+  }
+
+  const base      = depositAmount * peopleCount;
+  const bufferAmt = Math.round(base * (bufferPct / 100));
+  const total     = base + bufferAmt;
+
+  calcDeposit.textContent = depositAmount.toLocaleString('ko-KR') + '원';
+  calcBuffer.textContent  = '+' + bufferAmt.toLocaleString('ko-KR') + '원';
+  calcTotal.textContent   = total.toLocaleString('ko-KR') + '원';
+  summaryTotal.textContent= total.toLocaleString('ko-KR');
+}
+
+
+// ══════════════════════════════════════════════
+//  Char count for meeting name
+// ══════════════════════════════════════════════
+function updateCharCount(input) {
+  const count = input.value.length;
+  document.getElementById('charCount').textContent = `${count} / 30`;
+  const name = input.value || '모임 이름 입력 중...';
+  document.getElementById('summaryName').textContent = name;
+}
+
+
+// ══════════════════════════════════════════════
+//  Invite code actions
+// ══════════════════════════════════════════════
+function copyCode() {
+  navigator.clipboard?.writeText(inviteCode).catch(() => {});
+  const btn = document.getElementById('copyCodeBtn');
+  btn.innerHTML = '<i data-lucide="check" style="width:13px;height:13px;color:#00A864;"></i><span style="color:#00A864;">복사됨!</span>';
+  lucide.createIcons();
+  setTimeout(() => {
+    btn.innerHTML = '<i data-lucide="copy" style="width:13px;height:13px;"></i> 코드 복사';
+    lucide.createIcons();
+  }, 2000);
+}
+
+function regenerateCode() {
+  inviteCode = makeCode();
+  renderCode(inviteCode);
+  document.getElementById('linkPreview').textContent = `credit-n.app/join/${inviteCode}`;
+}
+
+function copyInviteLink() {
+  const link = `https://credit-n.app/join/${inviteCode}`;
+  navigator.clipboard?.writeText(link).catch(() => {});
+  const btn = event.currentTarget;
+  const original = btn.querySelector('p:last-child').textContent;
+  btn.querySelector('p:last-child').textContent = '링크 복사됨! ✓';
+  setTimeout(() => {
+    btn.querySelector('p:last-child').textContent = original;
+  }, 2000);
+}
+
+function shareKakao() {
+  alert('카카오톡 SDK 연동이 필요합니다.\n실제 서비스에서는 Kakao.Share.sendDefault()가 호출됩니다.');
+}
+
+
+// ══════════════════════════════════════════════
+//  Create group action
+// ══════════════════════════════════════════════
+function createGroup() {
+  const name = document.getElementById('meetingName').value.trim();
+  if (!name) {
+    document.getElementById('meetingName').focus();
+    document.getElementById('meetingName').style.borderColor = '#EF4444';
+    document.getElementById('meetingName').style.boxShadow  = '0 0 0 3px rgba(239,68,68,.15)';
+    setTimeout(() => {
+      document.getElementById('meetingName').style.borderColor = '';
+      document.getElementById('meetingName').style.boxShadow  = '';
+    }, 2500);
+    return;
+  }
+  if (!depositAmount) {
+    document.getElementById('depositAmount').focus();
+    document.getElementById('depositAmount').style.borderColor = '#EF4444';
+    setTimeout(() => {
+      document.getElementById('depositAmount').style.borderColor = '';
+    }, 2500);
+    return;
+  }
+
+  const btn = document.getElementById('createBtn');
+  btn.innerHTML = '<span style="border:2px solid rgba(255,255,255,.5);border-top-color:white;border-radius:50%;width:20px;height:20px;animation:spin-once .8s linear infinite;display:inline-block;"></span> 가상계좌 발급 중...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    location.href = 'escrow-detail.html';
+  }, 1800);
+}
+</script>
+
+</body>
+</html>

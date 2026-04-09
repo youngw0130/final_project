@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>크레딧-N | QR 결제</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="py-8">
+
+<!-- ══════════════════════════════════════════════
+     PHONE FRAME
+══════════════════════════════════════════════ -->
+<div class="qr-page-bg relative overflow-hidden flex flex-col mx-auto"
+     style="width:390px; min-height:844px; font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;">
+
+  <!-- ─── STATUS BAR ─── -->
+  <div class="flex items-center justify-between px-6 pt-3 pb-1 flex-shrink-0">
+    <span class="text-xs font-semibold text-white opacity-75">9:41</span>
+    <div class="flex items-center gap-1.5">
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <rect x="0"    y="6" width="3" height="6"  rx="1" fill="white" fill-opacity=".75"/>
+        <rect x="4.5"  y="4" width="3" height="8"  rx="1" fill="white" fill-opacity=".75"/>
+        <rect x="9"    y="2" width="3" height="10" rx="1" fill="white" fill-opacity=".75"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1" fill="white" fill-opacity=".75"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 9.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z" fill="white" fill-opacity=".75"/>
+        <path d="M4.5 6.8A4.97 4.97 0 018 5.5c1.38 0 2.63.56 3.5 1.3"   stroke="white" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M1.5 3.8A8.97 8.97 0 018 1.5c2.48 0 4.73 1 6.36 2.63"  stroke="white" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <div class="w-6 h-3 rounded-sm p-px flex" style="border:1px solid rgba(255,255,255,.6);">
+        <div class="flex-1 rounded-sm" style="background:rgba(255,255,255,.7);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── HEADER NAV ─── -->
+  <div class="flex items-center justify-between px-5 py-3 flex-shrink-0">
+    <a href="escrow-detail.html"
+       class="w-10 h-10 rounded-2xl flex items-center justify-center transition-opacity hover:opacity-80"
+       style="background:rgba(255,255,255,.15);">
+      <i data-lucide="arrow-left" style="width:20px;height:20px;color:white;stroke-width:2.5;"></i>
+    </a>
+    <div class="text-center">
+      <h1 class="text-white font-bold text-base tracking-tight">모임 공금 결제</h1>
+      <p class="text-xs mt-0.5" style="color:rgba(147,197,253,.85);">에스크로 가상계좌 연동</p>
+    </div>
+    <button class="w-10 h-10 rounded-2xl flex items-center justify-center" style="background:rgba(255,255,255,.15);">
+      <i data-lucide="more-vertical" style="width:20px;height:20px;color:white;"></i>
+    </button>
+  </div>
+
+  <!-- ─── MEETING INFO CARD ─── -->
+  <div class="px-5 mb-4 flex-shrink-0">
+    <div class="rounded-2xl px-4 py-3 flex items-center justify-between"
+         style="background:rgba(255,255,255,.13);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15);">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+             style="background:rgba(255,255,255,.18);">🏕️</div>
+        <div>
+          <p class="text-xs font-medium" style="color:rgba(147,197,253,.9);">결제 모임</p>
+          <p class="text-white text-sm font-bold mt-0.5">대학 친구들 MT</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-xs font-medium" style="color:rgba(147,197,253,.9);">가용 잔액</p>
+        <p class="text-white font-extrabold text-base mt-0.5 leading-none">
+          63,000<span class="text-xs font-semibold ml-0.5" style="color:rgba(147,197,253,.9);">원</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SCROLLABLE MAIN ─── -->
+  <div class="flex-1 flex flex-col items-center px-5 pb-2 overflow-y-auto" style="scrollbar-width:none;">
+
+    <!-- ── QR CARD ── -->
+    <div id="qrCard" class="qr-card-appear bg-white rounded-3xl w-full mb-4"
+         style="box-shadow:0 12px 48px rgba(0,0,0,.35), 0 4px 16px rgba(0,0,0,.2);">
+
+      <!-- Card top bar: security + expiry -->
+      <div class="flex items-center justify-between px-5 pt-5 pb-0">
+        <div class="flex items-center gap-1.5">
+          <i data-lucide="shield-check" style="width:13px;height:13px;color:#0052FF;stroke-width:2.5;"></i>
+          <span class="text-xs font-bold" style="color:#0052FF;">PortOne 보안 인증</span>
+          <div class="w-1.5 h-1.5 rounded-full ml-0.5"
+               style="background:#22C55E;box-shadow:0 0 5px #22C55E;"></div>
+        </div>
+        <div class="flex items-center gap-1">
+          <i data-lucide="lock" style="width:11px;height:11px;color:#9CA3AF;"></i>
+          <span class="text-xs" style="color:#9CA3AF;">SSL 암호화</span>
+        </div>
+      </div>
+
+      <!-- QR Code zone -->
+      <div class="flex flex-col items-center px-6 pt-5 pb-6">
+
+        <!-- QR wrapper with corner brackets + scan line -->
+        <div class="relative" style="width:196px;height:196px;padding:6px;background:#F8FAFF;border-radius:14px;box-shadow:inset 0 0 0 1px rgba(0,82,255,.08);">
+          <!-- Corner brackets -->
+          <div class="qr-brk qr-brk-tl"></div>
+          <div class="qr-brk qr-brk-tr"></div>
+          <div class="qr-brk qr-brk-bl"></div>
+          <div class="qr-brk qr-brk-br"></div>
+
+          <!-- Canvas QR code -->
+          <canvas id="qrCanvas" width="184" height="184"
+                  style="display:block;border-radius:8px;width:184px;height:184px;"></canvas>
+
+          <!-- Scanning line -->
+          <div class="scan-line" style="left:6px;right:6px;"></div>
+        </div>
+
+        <!-- Auth code -->
+        <div class="mt-5 w-full text-center">
+          <p class="text-xs font-semibold mb-3" style="color:#9CA3AF;letter-spacing:.06em;text-transform:uppercase;">결제 인증 코드</p>
+          <div id="authCode" class="flex items-center justify-center gap-1.5"></div>
+          <p class="text-xs mt-3 flex items-center justify-center gap-1.5" style="color:#CBD5E1;">
+            <i data-lucide="info" style="width:11px;height:11px;color:#CBD5E1;"></i>
+            점원에게 화면을 보여주세요
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECURITY TIMER ── -->
+    <div class="w-full mb-3 rounded-2xl px-4 py-4"
+         style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);">
+
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="timer" id="timerIcon" style="width:16px;height:16px;color:rgba(255,255,255,.85);"></i>
+          <span class="text-xs font-semibold" style="color:rgba(255,255,255,.75);">보안 코드 만료까지</span>
+        </div>
+        <span id="timerDisplay"
+              class="font-extrabold text-2xl text-white"
+              style="font-variant-numeric:tabular-nums;letter-spacing:.1em;line-height:1;">02:59</span>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="rounded-full overflow-hidden" style="height:7px;background:rgba(255,255,255,.18);">
+        <div id="timerBar" class="h-full rounded-full"
+             style="width:100%;background:linear-gradient(90deg,#00C27A,#4ADE80);transition:width 1s linear, background 1.2s ease;"></div>
+      </div>
+
+      <div class="flex justify-between mt-1.5">
+        <span class="text-xs" style="color:rgba(255,255,255,.4);">만료</span>
+        <div id="timerSegments" class="flex items-center gap-1">
+          <!-- 3 segment labels rendered by JS -->
+        </div>
+        <span class="text-xs" style="color:rgba(255,255,255,.4);">3:00</span>
+      </div>
+    </div>
+
+    <!-- ── ACTION BUTTONS ── -->
+    <div class="w-full grid grid-cols-2 gap-2.5 mb-3">
+
+      <!-- Refresh -->
+      <button id="refreshBtn" onclick="refreshCode()"
+              class="flex items-center justify-center gap-2 rounded-2xl font-semibold text-sm py-3.5 text-white transition-opacity hover:opacity-85"
+              style="background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px);">
+        <i data-lucide="rotate-ccw" id="refreshIcon" style="width:16px;height:16px;"></i>
+        코드 새로고침
+      </button>
+
+      <!-- Guide -->
+      <button onclick="openGuide()"
+              class="flex items-center justify-center gap-2 rounded-2xl font-bold text-sm py-3.5 transition-opacity hover:opacity-90"
+              style="background:white;color:#0052FF;box-shadow:0 6px 20px rgba(0,0,0,.22);">
+        <i data-lucide="help-circle" style="width:16px;height:16px;"></i>
+        결제 방법 안내
+      </button>
+    </div>
+
+    <!-- ── GUIDE HINT BOX ── -->
+    <div class="w-full rounded-2xl px-4 py-3.5 flex items-start gap-3 mb-2"
+         style="background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);">
+      <i data-lucide="smartphone" style="width:18px;height:18px;color:rgba(147,197,253,.8);flex-shrink:0;margin-top:1px;"></i>
+      <div>
+        <p class="text-white text-xs font-semibold mb-1">이렇게 사용하세요</p>
+        <p class="text-xs leading-relaxed" style="color:rgba(147,197,253,.85);">
+          포스기 바코드 스캐너에 QR 코드를 제시하면 가상계좌 잔액에서 자동으로 차감됩니다.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Safe area -->
+  <div class="flex-shrink-0" style="height:20px;"></div>
+
+
+  <!-- ══════════════════════════════════════════════
+       GUIDE BOTTOM SHEET (hidden by default)
+  ══════════════════════════════════════════════ -->
+  <div id="guideOverlay"
+       class="absolute inset-0 z-50 flex flex-col justify-end hidden"
+       style="background:rgba(0,0,0,.55);backdrop-filter:blur(3px);"
+       onclick="closeGuide(event)">
+
+    <div id="guideSheet"
+         class="sheet-up bg-white rounded-t-3xl overflow-hidden"
+         onclick="event.stopPropagation()">
+
+      <!-- Handle -->
+      <div class="flex justify-center pt-3 pb-1">
+        <div class="w-10 h-1 rounded-full" style="background:#E5E7EB;"></div>
+      </div>
+
+      <div class="px-6 pt-3 pb-8">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-gray-900 font-extrabold text-base">결제 방법 안내</h2>
+          <button onclick="closeGuide()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+            <i data-lucide="x" style="width:15px;height:15px;color:#6B7280;"></i>
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Step 1 -->
+          <div class="flex items-start gap-4">
+            <div class="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 font-extrabold text-white text-sm"
+                 style="background:linear-gradient(135deg,#0052FF,#4D94FF);">1</div>
+            <div>
+              <p class="text-gray-800 text-sm font-bold mb-0.5">QR 코드 제시</p>
+              <p class="text-gray-500 text-xs leading-relaxed">
+                포스기 또는 카드 단말기의 QR/바코드 스캐너에 화면을 가져가세요.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex items-start gap-4">
+            <div class="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 font-extrabold text-white text-sm"
+                 style="background:linear-gradient(135deg,#0052FF,#4D94FF);">2</div>
+            <div>
+              <p class="text-gray-800 text-sm font-bold mb-0.5">잔액 자동 차감</p>
+              <p class="text-gray-500 text-xs leading-relaxed">
+                모임 가상계좌 잔액에서 결제 금액이 즉시 차감됩니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex items-start gap-4">
+            <div class="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 font-extrabold text-white text-sm"
+                 style="background:linear-gradient(135deg,#0052FF,#4D94FF);">3</div>
+            <div>
+              <p class="text-gray-800 text-sm font-bold mb-0.5">코드가 보이지 않을 때</p>
+              <p class="text-gray-500 text-xs leading-relaxed">
+                6자리 인증 코드를 점원에게 구두로 알려주세요.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notice -->
+        <div class="mt-5 rounded-2xl px-4 py-3.5 flex items-start gap-2.5"
+             style="background:#FFF8F0;border:1px solid #FFE4B5;">
+          <i data-lucide="alert-triangle" style="width:15px;height:15px;color:#F59E0B;flex-shrink:0;margin-top:1px;"></i>
+          <p class="text-xs leading-relaxed" style="color:#92400E;">
+            QR 코드는 보안을 위해 <strong>3분마다 자동 갱신</strong>됩니다.
+            만료 전 결제를 완료하거나 코드를 새로 발급하세요.
+          </p>
+        </div>
+
+        <button onclick="closeGuide()"
+                class="w-full mt-5 py-3.5 rounded-2xl text-white font-bold text-sm"
+                style="background:linear-gradient(90deg,#0052FF,#4D94FF);">
+          확인했어요
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end phone-frame -->
+
+
+<script>
+// ══════════════════════════════════════════════
+//  Lucide icons
+// ══════════════════════════════════════════════
+lucide.createIcons();
+
+// ══════════════════════════════════════════════
+//  QR Canvas  (21 × 21 module matrix)
+// ══════════════════════════════════════════════
+const QR_MATRIX = [
+  [1,1,1,1,1,1,1,0,0,1,0,1,0,0,1,1,1,1,1,1,1],
+  [1,0,0,0,0,0,1,0,1,0,0,1,0,0,1,0,0,0,0,0,1],
+  [1,0,1,1,1,0,1,0,0,1,1,0,1,0,1,0,1,1,1,0,1],
+  [1,0,1,1,1,0,1,0,1,0,1,1,0,0,1,0,1,1,1,0,1],
+  [1,0,1,1,1,0,1,0,0,0,0,1,1,0,1,0,1,1,1,0,1],
+  [1,0,0,0,0,0,1,0,1,1,0,0,1,0,1,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1],
+  [0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0],
+  [1,1,0,1,0,1,1,1,0,0,1,0,1,1,1,0,1,1,0,1,0],
+  [0,1,1,0,0,1,0,0,1,1,0,0,0,1,0,0,1,0,1,0,1],
+  [1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,1,0,1,0,0,1],
+  [0,1,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,0,1,1,0],
+  [1,1,1,0,0,1,1,0,1,0,0,1,0,1,1,0,0,1,1,0,1],
+  [0,0,0,0,0,0,0,0,1,0,1,0,1,1,0,1,0,0,1,0,1],
+  [1,1,1,1,1,1,1,0,0,1,0,1,0,0,1,0,1,1,0,0,0],
+  [1,0,0,0,0,0,1,0,1,0,0,1,1,1,0,1,0,0,1,1,0],
+  [1,0,1,1,1,0,1,0,0,1,1,0,0,0,1,0,1,1,0,1,0],
+  [1,0,1,1,1,0,1,0,1,0,1,1,0,1,0,0,0,1,1,0,1],
+  [1,0,1,1,1,0,1,0,0,1,0,0,1,0,1,1,1,0,0,1,1],
+  [1,0,0,0,0,0,1,0,1,1,0,1,0,0,0,1,0,0,1,0,0],
+  [1,1,1,1,1,1,1,0,0,0,1,0,1,1,0,0,1,1,0,0,1],
+];
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y,     x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r,     y + h);
+  ctx.quadraticCurveTo(x, y + h,     x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y,         x + r, y);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawQR(matrix) {
+  const canvas = document.getElementById('qrCanvas');
+  if (!canvas) return;
+  const ctx  = canvas.getContext('2d');
+  const W    = canvas.width;
+  const mLen = matrix.length;
+  const sz   = W / mLen;
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, W, W);
+  ctx.fillStyle = '#0D0F1A';
+
+  matrix.forEach((row, y) => {
+    row.forEach((v, x) => {
+      if (!v) return;
+      roundRect(ctx, x * sz + 0.5, y * sz + 0.5, sz - 1, sz - 1, Math.min(1.5, sz * 0.18));
+    });
+  });
+}
+
+drawQR(QR_MATRIX);
+
+
+// ══════════════════════════════════════════════
+//  Auth Code
+// ══════════════════════════════════════════════
+function newDigits() {
+  return Array.from({ length: 6 }, () => Math.floor(Math.random() * 10));
+}
+
+function renderCode(digits) {
+  const el = document.getElementById('authCode');
+  el.innerHTML = '';
+
+  digits.forEach((d, i) => {
+    if (i === 3) {
+      const sep = document.createElement('span');
+      sep.style.cssText = 'color:#D1D5DB;font-size:22px;font-weight:700;align-self:center;margin:0 2px;';
+      sep.textContent = '-';
+      el.appendChild(sep);
+    }
+
+    const box = document.createElement('div');
+    box.className = 'digit-box';
+    box.style.cssText = [
+      'width:36px;height:46px',
+      'background:#F8FAFF',
+      'border:1.5px solid #EEF2FF',
+      'border-radius:12px',
+      'display:flex;align-items:center;justify-content:center',
+      'font-size:22px;font-weight:800;color:#111827',
+      `animation-delay:${i * 40}ms`,
+    ].join(';');
+    box.textContent = d;
+    el.appendChild(box);
+  });
+}
+
+let currentDigits = newDigits();
+renderCode(currentDigits);
+
+
+// ══════════════════════════════════════════════
+//  Countdown Timer
+// ══════════════════════════════════════════════
+const TOTAL_SECS = 180;
+let remaining    = 179;
+let timerRef;
+
+function fmt(s) {
+  return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+}
+
+function barGradient(pct) {
+  if (pct > 0.55) return 'linear-gradient(90deg,#00C27A,#4ADE80)';
+  if (pct > 0.25) return 'linear-gradient(90deg,#F59E0B,#FCD34D)';
+  return 'linear-gradient(90deg,#EF4444,#F87171)';
+}
+
+function tick() {
+  const pct     = remaining / TOTAL_SECS;
+  const display = document.getElementById('timerDisplay');
+  const bar     = document.getElementById('timerBar');
+  const icon    = document.getElementById('timerIcon');
+
+  display.textContent     = fmt(remaining);
+  bar.style.width         = (pct * 100) + '%';
+  bar.style.background    = barGradient(pct);
+
+  // Colour shift as time gets low
+  if (remaining <= 60 && remaining > 30) {
+    display.style.color = '#FCD34D';
+    if (icon) icon.style.color = '#FCD34D';
+  }
+  if (remaining <= 30) {
+    display.style.color = '#FCA5A5';
+    if (icon) icon.style.color = '#FCA5A5';
+    if (!display.classList.contains('timer-urgent')) display.classList.add('timer-urgent');
+  }
+
+  if (remaining <= 0) {
+    clearInterval(timerRef);
+    refreshCode(true);
+    return;
+  }
+
+  remaining--;
+}
+
+timerRef = setInterval(tick, 1000);
+tick();
+
+
+// ══════════════════════════════════════════════
+//  Refresh Code
+// ══════════════════════════════════════════════
+function refreshCode(auto = false) {
+  // Spin icon
+  const icon = document.getElementById('refreshIcon');
+  if (icon) {
+    icon.classList.remove('icon-spin');
+    void icon.offsetWidth;
+    icon.classList.add('icon-spin');
+    setTimeout(() => icon.classList.remove('icon-spin'), 600);
+  }
+
+  // Re-animate QR card
+  const card = document.getElementById('qrCard');
+  if (card) {
+    card.classList.remove('qr-card-appear');
+    void card.offsetWidth;
+    card.classList.add('qr-card-appear');
+  }
+
+  // New code & redraw QR
+  currentDigits = newDigits();
+  renderCode(currentDigits);
+  drawQR(QR_MATRIX);
+
+  // Reset timer
+  clearInterval(timerRef);
+  remaining = 179;
+
+  const display = document.getElementById('timerDisplay');
+  const timerIcon = document.getElementById('timerIcon');
+  display.classList.remove('timer-urgent');
+  display.style.color = 'white';
+  if (timerIcon) timerIcon.style.color = 'rgba(255,255,255,.85)';
+
+  timerRef = setInterval(tick, 1000);
+  tick();
+
+  // Re-init Lucide for any newly injected icons
+  lucide.createIcons();
+}
+
+
+// ══════════════════════════════════════════════
+//  Guide Bottom Sheet
+// ══════════════════════════════════════════════
+function openGuide() {
+  const overlay = document.getElementById('guideOverlay');
+  overlay.classList.remove('hidden');
+  lucide.createIcons(); // ensure X icon renders
+}
+
+function closeGuide(e) {
+  if (e && e.target !== document.getElementById('guideOverlay')) return;
+  document.getElementById('guideOverlay').classList.add('hidden');
+}
+
+// Allow close button (no event arg case)
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[onclick="closeGuide()"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('guideOverlay').classList.add('hidden');
+    });
+  });
+});
+</script>
+</body>
+</html>

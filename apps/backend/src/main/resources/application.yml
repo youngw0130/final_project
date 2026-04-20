@@ -1,0 +1,4 @@
+portone:
+  store-id: ${PORTONE_STORE_ID}
+  api-secret: ${PORTONE_API_SECRET}
+  # V2 API는 API 키 대신 Secret만으로 인증하는 경우가 많습니다.

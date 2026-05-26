@@ -8,6 +8,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/styles.css" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="../assets/api.js" defer></script>
+  <script src="../assets/auth-guard.js" defer></script>
+  <script src="../assets/proto-nav.js" defer></script>
 </head>
 <body class="py-8">
 
@@ -47,7 +50,7 @@
 
     <!-- Nav -->
     <div class="flex items-center justify-between py-3 relative z-10">
-      <a href="index.html"
+      <a href="../index.html"
          class="w-10 h-10 rounded-2xl flex items-center justify-center"
          style="background:rgba(255,255,255,.15);">
         <i data-lucide="arrow-left" style="width:20px;height:20px;color:white;stroke-width:2.5;"></i>
@@ -171,7 +174,7 @@
         <div class="relative">
           <input type="text"
                  class="form-input"
-                 placeholder="예: 강남역 2번 출구 근처"
+                 placeholder="예: 라멘야 부산본점"
                  style="padding-left:40px;" />
           <i data-lucide="map-pin" style="width:16px;height:16px;color:#9CA3AF;position:absolute;left:14px;top:50%;transform:translateY(-50%);"></i>
         </div>
@@ -706,7 +709,7 @@ function shareKakao() {
 // ══════════════════════════════════════════════
 //  Create group action
 // ══════════════════════════════════════════════
-function createGroup() {
+async function createGroup() {
   const name = document.getElementById('meetingName').value.trim();
   if (!name) {
     document.getElementById('meetingName').focus();
@@ -728,12 +731,40 @@ function createGroup() {
   }
 
   const btn = document.getElementById('createBtn');
+  const originalBtnHtml = btn.innerHTML;
   btn.innerHTML = '<span style="border:2px solid rgba(255,255,255,.5);border-top-color:white;border-radius:50%;width:20px;height:20px;animation:spin-once .8s linear infinite;display:inline-block;"></span> 가상계좌 발급 중...';
   btn.disabled = true;
 
-  setTimeout(() => {
-    location.href = 'escrow-detail.html';
-  }, 1800);
+  try {
+    const dateInput = document.querySelector('input[type="date"]').value || new Date().toISOString().slice(0,10);
+    const timeInput = document.querySelector('input[type="time"]').value || '19:00';
+    const scheduledAt = `${dateInput}T${timeInput}:00`;
+
+    const moim = await window.CreditN.api.moim.create({
+      title: name,
+      description: '모임 생성 화면에서 만든 모임',
+      emoji: selectedEmoji,
+      scheduledAt,
+      targetParticipantCount: peopleCount,
+      depositPerPerson: depositAmount,
+      bufferRate: bufferPct / 100,
+      refundAccountNumber: '110-1234-5678',
+      refundBank: '토스뱅크'
+    });
+
+    window.CN.state.selectedMoimId = moim.id;
+    btn.innerHTML = '<i data-lucide="check-circle" style="width:18px;height:18px;"></i> 발급 완료 — 이동 중...';
+    if (window.lucide) lucide.createIcons();
+
+    setTimeout(() => {
+      location.href = `03-escrow-detail.html?moimId=${moim.id}`;
+    }, 900);
+  } catch (e) {
+    alert('모임 생성 실패: ' + (e.message || ''));
+    btn.disabled = false;
+    btn.innerHTML = originalBtnHtml;
+    if (window.lucide) lucide.createIcons();
+  }
 }
 </script>
 

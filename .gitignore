@@ -5,10 +5,11 @@
 .env.*
 !.env.example
 
-# 프로파일별 application yml은 보통 시크릿을 포함하므로 제외
+# 로컬/개발 시크릿이 포함된 프로파일 제외
 **/application-local.yml
-**/application-prod.yml
 **/application-dev.yml
+# application-prod.yml은 env var 참조만 하므로 커밋 허용
+# **/application-prod.yml
 
 # ─────────────────────────────────────────────
 # OS / IDE

@@ -7,6 +7,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/styles.css" />
+  <script src="../assets/api.js" defer></script>
+  <script src="../assets/auth-guard.js" defer></script>
+  <script src="../assets/proto-nav.js" defer></script>
 </head>
 <body class="py-8">
 <div class="phone-frame">
@@ -46,7 +49,7 @@
 
       <!-- Top nav -->
       <div class="flex items-center justify-between mb-6 relative z-10">
-        <a href="index.html" class="w-9 h-9 rounded-xl bg-white bg-opacity-20 flex items-center justify-center">
+        <a href="../index.html" class="w-9 h-9 rounded-xl bg-white bg-opacity-20 flex items-center justify-center">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
           </svg>
@@ -61,13 +64,13 @@
 
       <!-- Group identity -->
       <div class="flex items-center gap-3 mb-5 relative z-10">
-        <div class="w-12 h-12 rounded-2xl bg-white bg-opacity-25 flex items-center justify-center text-2xl flex-shrink-0">🏕️</div>
+        <div id="moim-emoji" class="w-12 h-12 rounded-2xl bg-white bg-opacity-25 flex items-center justify-center text-2xl flex-shrink-0">🏕️</div>
         <div>
           <div class="flex items-center gap-2">
-            <h1 class="text-white text-lg font-extrabold">대학 친구들 MT</h1>
-            <span class="bg-green-400 bg-opacity-25 text-green-200 text-xs px-2 py-0.5 rounded-full font-semibold border border-green-300 border-opacity-30">● 진행중</span>
+            <h1 id="moim-title" class="text-white text-lg font-extrabold">대학 친구들 MT</h1>
+            <span id="moim-status-badge" class="bg-green-400 bg-opacity-25 text-green-200 text-xs px-2 py-0.5 rounded-full font-semibold border border-green-300 border-opacity-30">● 진행중</span>
           </div>
-          <p class="text-blue-200 text-xs mt-0.5">2025.03.15 ~ 03.17 · 5명 참여</p>
+          <p id="moim-subtitle" class="text-blue-200 text-xs mt-0.5">— · 5명 참여</p>
         </div>
       </div>
 
@@ -77,37 +80,36 @@
           <div>
             <p class="text-blue-200 text-xs font-medium mb-1">예치된 총금액</p>
             <div class="flex items-end gap-1.5">
-              <span class="text-white text-4xl font-extrabold tracking-tight">180,000</span>
+              <span id="moim-deposited" class="text-white text-4xl font-extrabold tracking-tight">0</span>
               <span class="text-blue-200 text-base mb-1 font-medium">원</span>
             </div>
             <div class="flex items-center gap-1.5 mt-1.5">
               <span class="text-blue-200 text-xs">목표</span>
-              <span class="text-white text-xs font-bold">300,000원</span>
+              <span id="moim-target" class="text-white text-xs font-bold">0원</span>
               <span class="text-blue-300 text-xs opacity-60">·</span>
-              <span class="text-green-300 text-xs font-semibold">60% 달성</span>
+              <span id="moim-rate-text" class="text-green-300 text-xs font-semibold">0% 달성</span>
             </div>
           </div>
           <!-- Donut gauge -->
           <div class="relative w-16 h-16 flex-shrink-0">
             <svg viewBox="0 0 64 64" class="w-16 h-16 -rotate-90">
               <circle cx="32" cy="32" r="24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="7"/>
-              <!-- 60% = 150.8 * 0.6 = 90.5 filled, dashoffset = 150.8 - 90.5 = 60.3 -->
-              <circle cx="32" cy="32" r="24" fill="none" stroke="white" stroke-width="7"
-                      stroke-dasharray="150.8" stroke-dashoffset="60.3" stroke-linecap="round"/>
+              <circle id="moim-donut" cx="32" cy="32" r="24" fill="none" stroke="white" stroke-width="7"
+                      stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round"/>
             </svg>
             <div class="absolute inset-0 flex items-center justify-center">
-              <span class="text-white text-sm font-bold leading-none">60%</span>
+              <span id="moim-donut-pct" class="text-white text-sm font-bold leading-none">0%</span>
             </div>
           </div>
         </div>
 
         <!-- Mini progress bar -->
         <div class="mt-3 h-1.5 bg-white bg-opacity-20 rounded-full overflow-hidden progress-shimmer">
-          <div class="h-full bg-gradient-to-r from-white to-blue-200 rounded-full" style="width:60%"></div>
+          <div id="moim-progress-bar" class="h-full bg-gradient-to-r from-white to-blue-200 rounded-full" style="width:0%"></div>
         </div>
         <div class="flex justify-between mt-1">
           <span class="text-blue-200 text-xs">0원</span>
-          <span class="text-blue-200 text-xs">300,000원</span>
+          <span id="moim-target-foot" class="text-blue-200 text-xs">0원</span>
         </div>
       </div>
     </div>
@@ -132,9 +134,9 @@
             <div class="flex items-center gap-2">
               <!-- Bank logo placeholder -->
               <div class="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center">
-                <span class="text-white text-xs font-extrabold">T</span>
+                <span id="va-bank-initial" class="text-white text-xs font-extrabold">T</span>
               </div>
-              <span class="text-gray-600 text-xs font-semibold">토스뱅크</span>
+              <span id="va-bank-name" class="text-gray-600 text-xs font-semibold">토스뱅크</span>
             </div>
             <span class="text-gray-400 text-xs">모임 전용 가상계좌</span>
           </div>
@@ -142,7 +144,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-gray-400 text-xs mb-1">계좌번호</p>
-              <p class="text-gray-900 text-lg font-extrabold tracking-widest">1000-1234-5678</p>
+              <p id="va-account-number" class="text-gray-900 text-lg font-extrabold tracking-widest">—</p>
             </div>
             <button id="copyBtn" class="copy-btn flex items-center gap-1.5 text-blue-600 text-xs font-bold bg-white px-3.5 py-2 rounded-xl border-2 border-blue-200 card-shadow-sm">
               <svg id="copyIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -165,15 +167,15 @@
         <div class="grid grid-cols-3 gap-2 mt-3">
           <div class="bg-gray-50 rounded-xl p-3 text-center">
             <p class="text-gray-400 text-xs mb-1">1인 목표</p>
-            <p class="text-gray-800 text-sm font-extrabold">60,000<span class="text-xs font-medium text-gray-500">원</span></p>
+            <p class="text-gray-800 text-sm font-extrabold"><span id="moim-per-person">0</span><span class="text-xs font-medium text-gray-500">원</span></p>
           </div>
           <div class="bg-gray-50 rounded-xl p-3 text-center">
             <p class="text-gray-400 text-xs mb-1">참여 인원</p>
-            <p class="text-gray-800 text-sm font-extrabold">5<span class="text-xs font-medium text-gray-500">명</span></p>
+            <p class="text-gray-800 text-sm font-extrabold"><span id="moim-people-count">0</span><span class="text-xs font-medium text-gray-500">명</span></p>
           </div>
           <div class="bg-blue-50 rounded-xl p-3 text-center">
             <p class="text-blue-400 text-xs mb-1">입금 완료</p>
-            <p class="text-blue-700 text-sm font-extrabold">3<span class="text-xs font-medium text-blue-400">명</span></p>
+            <p class="text-blue-700 text-sm font-extrabold"><span id="moim-deposited-count">0</span><span class="text-xs font-medium text-blue-400">명</span></p>
           </div>
         </div>
       </div>
@@ -193,7 +195,7 @@
           </div>
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 bg-orange-400 rounded-full"></span>
-            <span class="text-orange-500 text-xs font-bold">미입금 2명</span>
+            <span id="unpaid-count-label" class="text-orange-500 text-xs font-bold">미입금 0명</span>
           </div>
         </div>
 
@@ -209,143 +211,9 @@
           </div>
         </div>
 
-        <div class="space-y-2.5">
+        <div id="member-list" class="space-y-2.5">
 
-          <!-- ── PAID: 김지원 (나) ── -->
-          <div class="member-row-paid rounded-2xl px-4 py-3.5 flex items-center gap-3.5">
-            <div class="relative flex-shrink-0">
-              <div class="w-11 h-11 rounded-2xl bg-blue-500 flex items-center justify-center">
-                <span class="text-white text-sm font-bold">지원</span>
-              </div>
-              <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
-                <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="text-gray-900 text-sm font-bold">김지원</span>
-                <span class="bg-blue-50 text-blue-600 text-xs px-2 py-0.5 rounded-full font-semibold">방장</span>
-                <span class="bg-gray-100 text-gray-400 text-xs px-2 py-0.5 rounded-full">나</span>
-              </div>
-              <p class="text-gray-400 text-xs mt-0.5">03.15 10:22 입금 완료</p>
-            </div>
-            <div class="text-right flex-shrink-0">
-              <p class="text-blue-600 text-sm font-extrabold">60,000원</p>
-              <p class="text-green-500 text-xs font-semibold mt-0.5">완료 ✓</p>
-            </div>
-          </div>
-
-          <!-- ── PAID: 이민준 ── -->
-          <div class="member-row-paid rounded-2xl px-4 py-3.5 flex items-center gap-3.5">
-            <div class="relative flex-shrink-0">
-              <div class="w-11 h-11 rounded-2xl bg-indigo-400 flex items-center justify-center">
-                <span class="text-white text-sm font-bold">민준</span>
-              </div>
-              <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
-                <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="text-gray-900 text-sm font-bold">이민준</span>
-              </div>
-              <p class="text-gray-400 text-xs mt-0.5">03.15 11:48 입금 완료</p>
-            </div>
-            <div class="text-right flex-shrink-0">
-              <p class="text-blue-600 text-sm font-extrabold">60,000원</p>
-              <p class="text-green-500 text-xs font-semibold mt-0.5">완료 ✓</p>
-            </div>
-          </div>
-
-          <!-- ── PAID: 박수아 ── -->
-          <div class="member-row-paid rounded-2xl px-4 py-3.5 flex items-center gap-3.5">
-            <div class="relative flex-shrink-0">
-              <div class="w-11 h-11 rounded-2xl bg-violet-400 flex items-center justify-center">
-                <span class="text-white text-sm font-bold">수아</span>
-              </div>
-              <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
-                <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="text-gray-900 text-sm font-bold">박수아</span>
-              </div>
-              <p class="text-gray-400 text-xs mt-0.5">03.16 09:05 입금 완료</p>
-            </div>
-            <div class="text-right flex-shrink-0">
-              <p class="text-blue-600 text-sm font-extrabold">60,000원</p>
-              <p class="text-green-500 text-xs font-semibold mt-0.5">완료 ✓</p>
-            </div>
-          </div>
-
-          <!-- ── DIVIDER: 미입금 구간 ── -->
-          <div class="flex items-center gap-2 py-1">
-            <div class="flex-1 h-px bg-orange-100"></div>
-            <span class="text-orange-400 text-xs font-bold px-2 bg-orange-50 py-1 rounded-full">아직 입금하지 않았어요</span>
-            <div class="flex-1 h-px bg-orange-100"></div>
-          </div>
-
-          <!-- ── UNPAID: 최예진 ── -->
-          <div class="member-row-unpaid rounded-2xl px-4 py-3.5 flex items-center gap-3.5">
-            <div class="relative flex-shrink-0">
-              <div class="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center">
-                <span class="text-gray-400 text-sm font-bold">예진</span>
-              </div>
-              <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-orange-400 rounded-full border-2 border-white flex items-center justify-center">
-                <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/>
-                </svg>
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="text-gray-800 text-sm font-bold">최예진</span>
-                <span class="score-impact-badge text-xs px-2 py-0.5 rounded-full font-semibold">스코어 -10</span>
-              </div>
-              <p class="text-orange-400 text-xs mt-0.5 font-medium">입금 기한 D-1 · 아직 미입금</p>
-            </div>
-            <button class="nudge-btn flex items-center gap-1 bg-orange-500 text-white text-xs font-bold px-3 py-2 rounded-xl flex-shrink-0">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-              </svg>
-              독촉
-            </button>
-          </div>
-
-          <!-- ── UNPAID: 한재현 ── -->
-          <div class="member-row-unpaid rounded-2xl px-4 py-3.5 flex items-center gap-3.5">
-            <div class="relative flex-shrink-0">
-              <div class="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center">
-                <span class="text-gray-400 text-sm font-bold">재현</span>
-              </div>
-              <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-orange-400 rounded-full border-2 border-white flex items-center justify-center">
-                <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/>
-                </svg>
-              </div>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="text-gray-800 text-sm font-bold">한재현</span>
-                <span class="score-impact-badge text-xs px-2 py-0.5 rounded-full font-semibold">스코어 -10</span>
-              </div>
-              <p class="text-orange-400 text-xs mt-0.5 font-medium">입금 기한 D-1 · 아직 미입금</p>
-            </div>
-            <button class="nudge-btn flex items-center gap-1 bg-orange-500 text-white text-xs font-bold px-3 py-2 rounded-xl flex-shrink-0">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-              </svg>
-              독촉
-            </button>
-          </div>
-
+          <!-- members rendered by JS -->
         </div>
 
         <!-- 전체 독촉 버튼 -->
@@ -471,7 +339,7 @@
             </div>
             <div class="flex-1">
               <p class="text-gray-800 text-xs font-semibold">식당 · QR 결제</p>
-              <p class="text-gray-400 text-xs mt-0.5">03.16 19:14 · 이민준 결제</p>
+              <p class="text-gray-400 text-xs mt-0.5">03.16 19:14 · 결제 완료</p>
             </div>
             <span class="text-red-500 text-sm font-bold flex-shrink-0">-85,000원</span>
           </div>
@@ -481,7 +349,7 @@
             </div>
             <div class="flex-1">
               <p class="text-gray-800 text-xs font-semibold">편의점 · QR 결제</p>
-              <p class="text-gray-400 text-xs mt-0.5">오늘 14:32 · 박수아 결제</p>
+              <p class="text-gray-400 text-xs mt-0.5">오늘 14:32 · 결제 완료</p>
             </div>
             <span class="text-red-500 text-sm font-bold flex-shrink-0">-32,000원</span>
           </div>
@@ -541,7 +409,7 @@
   <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-2 py-2 z-50"
        style="box-shadow: 0 -4px 20px rgba(0,0,0,0.06);">
     <div class="flex items-center justify-around">
-      <a href="index.html" class="flex flex-col items-center gap-1 px-4 py-1.5">
+      <a href="../index.html" class="flex flex-col items-center gap-1 px-4 py-1.5">
         <svg class="w-6 h-6" fill="none" stroke="#9CA3AF" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
         </svg>
@@ -583,7 +451,8 @@
   const copyIcon = document.getElementById('copyIcon');
 
   copyBtn.addEventListener('click', () => {
-    navigator.clipboard?.writeText('1000-1234-5678').catch(() => {});
+    const accountText = document.getElementById('va-account-number')?.textContent || '';
+    navigator.clipboard?.writeText(accountText).catch(() => {});
     copyBtn.classList.add('copied');
     copyText.textContent = '복사됨!';
     copyIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>';
@@ -593,21 +462,193 @@
       copyIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>';
     }, 2000);
   });
+</script>
 
-  // 개별 독촉 버튼
-  document.querySelectorAll('.nudge-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const original = btn.innerHTML;
-      btn.textContent = '전송됨 ✓';
-      btn.classList.add('bg-green-500');
-      btn.classList.remove('bg-orange-500');
-      setTimeout(() => {
-        btn.innerHTML = original;
-        btn.classList.remove('bg-green-500');
-        btn.classList.add('bg-orange-500');
-      }, 2000);
+<!-- ═══════════════════════════════════════════════
+     BACKEND DATA BINDING
+═══════════════════════════════════════════════ -->
+<script>
+(function () {
+  function getMoimIdFromUrl() {
+    const u = new URL(location.href);
+    const q = u.searchParams.get('moimId');
+    return q ? Number(q) : null;
+  }
+
+  function fmtKstDateTime(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })
+      + ' ' + d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+
+  const COLORS = ['bg-blue-500','bg-indigo-400','bg-violet-400','bg-pink-400','bg-emerald-400','bg-amber-400'];
+  const colorFor = (n) => COLORS[(n || 0) % COLORS.length];
+
+  function renderMemberRow(p, myUserId, creatorId, idx) {
+    const initial = window.CN.fmt.short2(p.username);
+    const dotColor = colorFor(idx);
+    const isCreator = creatorId != null && Number(p.userId) === Number(creatorId);
+
+    if (p.depositStatus === 'DEPOSITED' || p.depositStatus === 'REFUNDED') {
+      const subtitle = p.depositStatus === 'REFUNDED'
+        ? `환급 완료 · 분담 ${window.CN.fmt.won(p.shareAmount)}원`
+        : `${fmtKstDateTime(p.depositedAt)} 입금 완료`;
+      return `
+        <div class="member-row-paid rounded-2xl px-4 py-3.5 flex items-center gap-3.5">
+          <div class="relative flex-shrink-0">
+            <div class="w-11 h-11 rounded-2xl ${dotColor} flex items-center justify-center">
+              <span class="text-white text-sm font-bold">${initial}</span>
+            </div>
+            <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
+              <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-gray-900 text-sm font-bold">${p.username}</span>
+              ${isCreator ? '<span class="bg-blue-50 text-blue-600 text-xs px-2 py-0.5 rounded-full font-semibold">방장</span>' : ''}
+              ${p.userId === myUserId ? '<span class="bg-gray-100 text-gray-400 text-xs px-2 py-0.5 rounded-full">나</span>' : ''}
+            </div>
+            <p class="text-gray-400 text-xs mt-0.5">${subtitle}</p>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <p class="text-blue-600 text-sm font-extrabold">${window.CN.fmt.won(p.depositAmount)}원</p>
+            <p class="text-green-500 text-xs font-semibold mt-0.5">${p.depositStatus === 'REFUNDED' ? '환급 ✓' : '완료 ✓'}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    const isOverdue = p.depositStatus === 'OVERDUE';
+    const stateLine = isOverdue
+      ? '기한 초과 · 스코어 감점 적용'
+      : '입금 대기 중';
+    return `
+      <div class="member-row-unpaid rounded-2xl px-4 py-3.5 flex items-center gap-3.5">
+        <div class="relative flex-shrink-0">
+          <div class="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center">
+            <span class="text-gray-400 text-sm font-bold">${initial}</span>
+          </div>
+          <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-orange-400 rounded-full border-2 border-white flex items-center justify-center">
+            <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/>
+            </svg>
+          </div>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-gray-800 text-sm font-bold">${p.username}</span>
+            ${isOverdue ? '<span class="score-impact-badge text-xs px-2 py-0.5 rounded-full font-semibold">스코어 -10</span>' : ''}
+          </div>
+          <p class="text-orange-400 text-xs mt-0.5 font-medium">${stateLine}</p>
+        </div>
+        <button data-confirm-userid="${p.userId}" class="nudge-btn flex items-center gap-1 bg-orange-500 text-white text-xs font-bold px-3 py-2 rounded-xl flex-shrink-0">
+          💰 입금
+        </button>
+      </div>
+    `;
+  }
+
+  async function loadMoim() {
+    const moimId = getMoimIdFromUrl() || window.CN.state.selectedMoimId;
+
+    if (!moimId) {
+      // fallback: 내 첫 번째 모임
+      const my = await window.CreditN.api.moim.my();
+      if (!my.length) {
+        alert('참여 중인 모임이 없습니다. 먼저 모임을 만들어주세요.');
+        return;
+      }
+      window.CN.state.selectedMoimId = my[0].id;
+      location.search = `?moimId=${my[0].id}`;
+      return;
+    }
+
+    const [moim, parts] = await Promise.all([
+      window.CreditN.api.moim.get(moimId),
+      window.CreditN.api.moim.participants(moimId)
+    ]);
+    window.CN.state.selectedMoimId = moim.id;
+
+    // 헤더
+    document.getElementById('moim-emoji').textContent = moim.emoji || '🎯';
+    document.getElementById('moim-title').textContent = moim.title;
+    document.getElementById('moim-subtitle').textContent =
+      `${moim.virtualAccountBank || '-'} · ${moim.currentParticipantCount}명 참여`;
+    const statusBadge = document.getElementById('moim-status-badge');
+    const STATUS_LABEL = {
+      OPEN: '● 모집 중', ACTIVE: '● 진행중', SETTLING: '● 정산 중',
+      CLOSED: '● 종료', CANCELLED: '● 취소'
+    };
+    statusBadge.textContent = STATUS_LABEL[moim.status] || moim.status;
+
+    // 금액
+    document.getElementById('moim-deposited').textContent = window.CN.fmt.won(moim.totalDeposited);
+    document.getElementById('moim-target').textContent = window.CN.fmt.won(moim.targetAmount) + '원';
+    document.getElementById('moim-target-foot').textContent = window.CN.fmt.won(moim.targetAmount) + '원';
+    const rate = Number(moim.depositRate) || 0;
+    document.getElementById('moim-rate-text').textContent = `${rate.toFixed(1)}% 달성`;
+    document.getElementById('moim-donut-pct').textContent = `${Math.round(rate)}%`;
+    const dasharray = 150.8;
+    document.getElementById('moim-donut').setAttribute('stroke-dashoffset', String(dasharray * (1 - rate/100)));
+    document.getElementById('moim-progress-bar').style.width = `${rate}%`;
+
+    // 가상계좌
+    document.getElementById('va-bank-name').textContent = moim.virtualAccountBank || '발급 대기';
+    document.getElementById('va-bank-initial').textContent = (moim.virtualAccountBank || 'B').charAt(0);
+    document.getElementById('va-account-number').textContent =
+      moim.virtualAccountNumber
+        ? moim.virtualAccountNumber.replace(/(\d{4})(?=\d)/g, '$1-')
+        : '발급 대기 중';
+
+    // 1인 목표 / 참여 인원
+    document.getElementById('moim-per-person').textContent = window.CN.fmt.won(moim.depositPerPerson);
+    document.getElementById('moim-people-count').textContent = moim.currentParticipantCount;
+    const deposited = parts.filter(p => p.depositStatus === 'DEPOSITED' || p.depositStatus === 'REFUNDED').length;
+    document.getElementById('moim-deposited-count').textContent = deposited;
+
+    // 멤버 목록
+    const myUserId = window.CreditN.auth.user?.id;
+    const sorted = [...parts].sort((a, b) => {
+      const order = { DEPOSITED: 0, REFUNDED: 1, PENDING: 2, OVERDUE: 3 };
+      return (order[a.depositStatus] ?? 9) - (order[b.depositStatus] ?? 9);
+    });
+
+    const memberList = document.getElementById('member-list');
+    memberList.innerHTML = sorted.map((p, i) => renderMemberRow(p, myUserId, moim.creatorId, i)).join('');
+
+    // 미입금 수
+    const unpaid = parts.length - deposited;
+    document.getElementById('unpaid-count-label').textContent = `미입금 ${unpaid}명`;
+
+    // 입금 트리거 버튼들 바인딩
+    memberList.querySelectorAll('button[data-confirm-userid]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const userId = btn.dataset.confirmUserid;
+        btn.disabled = true;
+        btn.textContent = '처리 중...';
+        try {
+          await window.CreditN.api.moim.confirmDeposit(moim.id, userId);
+          await loadMoim();
+        } catch (e) {
+          alert('입금 처리 실패: ' + e.message);
+          btn.disabled = false;
+          btn.textContent = '💰 입금';
+        }
+      });
+    });
+  }
+
+  window.CN.requireAuth(() => {
+    loadMoim().catch(e => {
+      console.error(e);
+      alert('데이터 로드 실패: ' + e.message);
     });
   });
+})();
 </script>
 </body>
 </html>

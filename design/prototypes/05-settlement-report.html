@@ -8,6 +8,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/styles.css" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="../assets/api.js" defer></script>
+  <script src="../assets/auth-guard.js" defer></script>
+  <script src="../assets/proto-nav.js" defer></script>
 </head>
 <body class="py-8">
 
@@ -51,7 +54,7 @@
 
     <!-- Nav row -->
     <div class="flex items-center justify-between px-5 py-3 relative z-10">
-      <a href="escrow-detail.html"
+      <a href="03-escrow-detail.html"
          class="w-10 h-10 rounded-2xl flex items-center justify-center"
          style="background:rgba(255,255,255,.15);">
         <i data-lucide="arrow-left" style="width:20px;height:20px;color:white;stroke-width:2.5;"></i>
@@ -76,8 +79,14 @@
       <p class="text-blue-200 text-sm font-medium">모든 정산이 완료됐어요</p>
       <div class="flex items-center gap-1.5 mt-2">
         <i data-lucide="clock" style="width:12px;height:12px;color:rgba(147,197,253,.8);"></i>
-        <span class="text-xs" style="color:rgba(147,197,253,.8);">2025.03.17 21:43:27 처리완료</span>
+        <span id="settled-at-text" class="text-xs" style="color:rgba(147,197,253,.8);">정산 대기</span>
       </div>
+
+      <!-- 정산 트리거 (모임이 아직 정산 안 됐을 때 노출) -->
+      <button id="settleNowBtn" class="hidden mt-4 px-5 py-3 rounded-2xl font-extrabold text-sm transition-opacity hover:opacity-90"
+              style="background:white;color:#0052FF;box-shadow:0 8px 24px rgba(0,0,0,.2);">
+        지금 정산 실행
+      </button>
     </div>
   </div>
 
@@ -107,11 +116,11 @@
 
         <!-- Meeting name -->
         <div class="py-3.5 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
+          <div id="settle-emoji" class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
                style="background:#F0EDE8;">🥩</div>
           <div>
-            <p class="font-bold text-sm" style="color:#2D2A25;">강남역 삼겹살 모임</p>
-            <p class="text-xs mt-0.5" style="color:#A09C94;">2025.03.15 ~ 2025.03.17 · 5명 참여</p>
+            <p id="settle-title" class="font-bold text-sm" style="color:#2D2A25;">—</p>
+            <p id="settle-subtitle" class="text-xs mt-0.5" style="color:#A09C94;">—</p>
           </div>
         </div>
 
@@ -122,19 +131,19 @@
           <p class="text-xs font-bold tracking-wide mb-3" style="color:#A09C94;letter-spacing:.06em;">지출 내역</p>
           <div class="flex justify-between items-center">
             <span class="text-sm" style="color:#6B6760;">총 지출액 (QR 결제 합산)</span>
-            <span class="text-sm font-semibold" style="color:#2D2A25;">237,500원</span>
+            <span id="settle-total-spent" class="text-sm font-semibold" style="color:#2D2A25;">0원</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-sm" style="color:#6B6760;">참여 인원</span>
-            <span class="text-sm font-semibold" style="color:#2D2A25;">5명</span>
+            <span id="settle-people" class="text-sm font-semibold" style="color:#2D2A25;">0명</span>
           </div>
           <div class="flex justify-between items-center">
             <div class="flex items-center gap-1.5">
               <span class="text-sm" style="color:#6B6760;">1인 분담금</span>
-              <span class="text-xs px-1.5 py-0.5 rounded-full font-semibold"
-                    style="background:#EEF2FF;color:#4F46E5;">÷5</span>
+              <span id="settle-divider-badge" class="text-xs px-1.5 py-0.5 rounded-full font-semibold"
+                    style="background:#EEF2FF;color:#4F46E5;">÷0</span>
             </div>
-            <span class="text-sm font-semibold" style="color:#2D2A25;">47,500원</span>
+            <span id="settle-share" class="text-sm font-semibold" style="color:#2D2A25;">0원</span>
           </div>
         </div>
 
@@ -145,11 +154,11 @@
           <p class="text-xs font-bold tracking-wide mb-3" style="color:#A09C94;letter-spacing:.06em;">정산 계산</p>
           <div class="flex justify-between items-center">
             <span class="text-sm" style="color:#6B6760;">내 예치금</span>
-            <span class="text-sm font-semibold" style="color:#2D2A25;">60,000원</span>
+            <span id="settle-my-deposit" class="text-sm font-semibold" style="color:#2D2A25;">0원</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-sm" style="color:#6B6760;">내 분담금</span>
-            <span class="text-sm font-semibold" style="color:#C0392B;">−47,500원</span>
+            <span id="settle-my-share" class="text-sm font-semibold" style="color:#C0392B;">−0원</span>
           </div>
         </div>
 
@@ -169,7 +178,7 @@
           <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full"
                style="background:rgba(0,168,100,.1);">
             <i data-lucide="arrow-up-right" style="width:13px;height:13px;color:#00A864;stroke-width:2.5;"></i>
-            <span class="text-xs font-bold" style="color:#00A864;">예치금 60,000원 → 환급 12,500원</span>
+            <span id="settle-refund-flow" class="text-xs font-bold" style="color:#00A864;">예치금 → 환급</span>
           </div>
         </div>
 
@@ -332,7 +341,7 @@
       <!-- Score bar -->
       <div class="mb-4">
         <div class="flex justify-between text-xs text-gray-400 mb-1.5">
-          <span>Poor</span><span>Fair</span><span>Good</span><span>Excellent</span>
+          <span>낮음</span><span>보통</span><span>좋음</span><span>아주 좋음</span>
         </div>
         <div class="h-3 bg-gray-100 rounded-full overflow-hidden relative">
           <!-- Old score marker -->
@@ -378,7 +387,7 @@
     </button>
 
     <!-- Confirm (home) -->
-    <button onclick="location.href='index.html'"
+    <button onclick="location.href='../index.html'"
             class="flex items-center justify-center gap-2 text-white font-bold text-sm py-4 rounded-2xl transition-opacity hover:opacity-90"
             style="background:linear-gradient(90deg,#0052FF,#4D94FF);box-shadow:0 8px 24px rgba(0,82,255,.35);">
       <i data-lucide="home" style="width:16px;height:16px;"></i>
@@ -412,40 +421,139 @@ function countUp(el, target, durationMs, delayMs = 0) {
   }, delayMs);
 }
 
-const refundEl = document.getElementById('refundAmount');
-if (refundEl) countUp(refundEl, 12500, 1600, 900);
+// (count-up은 백엔드 데이터 로드 후 실행)
 
 
-// ══════════════════════════════════════════════
-//  Share button (native share or copy)
-// ══════════════════════════════════════════════
-document.querySelectorAll('button').forEach(btn => {
-  if (btn.textContent.includes('정산 내역 공유')) {
-    btn.addEventListener('click', async () => {
-      const text = [
-        '📋 크레딧-N 정산 리포트',
-        '모임: 강남역 삼겹살 모임',
-        '총 지출: 237,500원 (5명)',
-        '1인 분담금: 47,500원',
-        '내 환급액: 12,500원',
-        '─────────────────',
-        '거래 ID: CN-20250317-8472',
-        '처리 일시: 2025.03.17 21:43',
-      ].join('\n');
+// (공유 버튼은 백엔드 데이터 로드 후 바인딩)
+</script>
 
-      if (navigator.share) {
-        await navigator.share({ title: '크레딧-N 정산 리포트', text }).catch(() => {});
-      } else {
-        await navigator.clipboard?.writeText(text).catch(() => {});
-        btn.textContent = '✓ 복사됨!';
-        setTimeout(() => {
-          btn.innerHTML = '<i data-lucide="share-2" style="width:16px;height:16px;"></i> 정산 내역 공유';
-          lucide.createIcons();
-        }, 2000);
+<!-- ═══════════════════════════════════════════════
+     BACKEND DATA BINDING
+═══════════════════════════════════════════════ -->
+<script>
+(function () {
+  function getMoimIdFromUrl() {
+    const u = new URL(location.href);
+    const q = u.searchParams.get('moimId');
+    return q ? Number(q) : null;
+  }
+
+  function dateRange(scheduledAt) {
+    if (!scheduledAt) return '—';
+    const d = new Date(scheduledAt);
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    return `${d.getFullYear()}.${String(month).padStart(2,'0')}.${String(day).padStart(2,'0')} 진행`;
+  }
+
+  async function loadMoim() {
+    const moimId = getMoimIdFromUrl() || window.CN.state.selectedMoimId;
+    if (!moimId) {
+      alert('표시할 모임이 없습니다.');
+      return;
+    }
+
+    const [moim, parts] = await Promise.all([
+      window.CreditN.api.moim.get(moimId),
+      window.CreditN.api.moim.participants(moimId)
+    ]);
+
+    bindMoim(moim, parts);
+
+    // 정산 가능할 때만 트리거 버튼 노출 (SETTLING 은 백엔드에서 이미 정산 처리 중으로 간주)
+    const settleBtn = document.getElementById('settleNowBtn');
+    const canSettle = moim.status === 'OPEN' || moim.status === 'ACTIVE';
+    if (canSettle) {
+      settleBtn.classList.remove('hidden');
+      settleBtn.addEventListener('click', async () => {
+        settleBtn.disabled = true;
+        settleBtn.textContent = '정산 중...';
+        try {
+          await window.CreditN.api.moim.settle(moim.id);
+          location.reload();
+        } catch (e) {
+          alert('정산 실패: ' + e.message);
+          settleBtn.disabled = false;
+          settleBtn.textContent = '지금 정산 실행';
+        }
+      }, { once: true });
+    } else {
+      settleBtn.classList.add('hidden');
+    }
+
+    // 뒤로가기 보정
+    document.querySelectorAll('a[href="03-escrow-detail.html"]').forEach(a => {
+      a.href = `03-escrow-detail.html?moimId=${moim.id}`;
+    });
+  }
+
+  function bindMoim(moim, parts) {
+    // 모임 정보
+    document.getElementById('settle-emoji').textContent = moim.emoji || '🎯';
+    document.getElementById('settle-title').textContent = moim.title;
+    document.getElementById('settle-subtitle').textContent =
+      `${dateRange(moim.scheduledAt)} · ${moim.currentParticipantCount}명 참여`;
+
+    // 정산 처리 시각 (status 가 CLOSED 면 updatedAt 흉내)
+    if (moim.status === 'CLOSED') {
+      document.getElementById('settled-at-text').textContent = '정산 완료';
+    } else {
+      document.getElementById('settled-at-text').textContent = '정산 대기 중';
+    }
+
+    // 지출/분담
+    const totalSpent = Number(moim.totalSpent) || 0;
+    const people = moim.currentParticipantCount || 1;
+    const share = people > 0 ? Math.round(totalSpent / people) : 0;
+    document.getElementById('settle-total-spent').textContent = window.CN.fmt.won(totalSpent) + '원';
+    document.getElementById('settle-people').textContent = people + '명';
+    document.getElementById('settle-divider-badge').textContent = `÷${people}`;
+    document.getElementById('settle-share').textContent = window.CN.fmt.won(share) + '원';
+
+    // 내 정보
+    const myId = window.CreditN.auth.user?.id;
+    const me = parts.find(p => p.userId === myId) || parts[0];
+    if (me) {
+      const myDeposit = Number(me.depositAmount) || 0;
+      const myShare = Number(me.shareAmount) || share;
+      const myRefund = Number(me.refundAmount);
+      const refundCalc = !isNaN(myRefund) && myRefund !== null ? myRefund : (myDeposit - myShare);
+
+      document.getElementById('settle-my-deposit').textContent = window.CN.fmt.won(myDeposit) + '원';
+      document.getElementById('settle-my-share').textContent = `−${window.CN.fmt.won(myShare)}원`;
+      document.getElementById('settle-refund-flow').textContent =
+        `예치금 ${window.CN.fmt.won(myDeposit)}원 → 환급 ${window.CN.fmt.won(refundCalc)}원`;
+
+      // count-up
+      countUp(document.getElementById('refundAmount'), refundCalc, 1400, 400);
+    }
+
+    // 공유 버튼
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.textContent.includes('정산 내역 공유')) {
+        btn.addEventListener('click', async () => {
+          const text = [
+            '📋 크레딧-N 정산 리포트',
+            `모임: ${moim.title}`,
+            `총 지출: ${window.CN.fmt.won(totalSpent)}원 (${people}명)`,
+            `1인 분담금: ${window.CN.fmt.won(share)}원`,
+            `상태: ${moim.status}`,
+          ].join('\n');
+          if (navigator.share) {
+            await navigator.share({ title: '크레딧-N 정산 리포트', text }).catch(() => {});
+          } else {
+            await navigator.clipboard?.writeText(text).catch(() => {});
+            btn.textContent = '✓ 복사됨!';
+          }
+        });
       }
     });
   }
-});
+
+  window.CN.requireAuth(() => {
+    loadMoim().catch(e => alert('데이터 로드 실패: ' + e.message));
+  });
+})();
 </script>
 
 </body>

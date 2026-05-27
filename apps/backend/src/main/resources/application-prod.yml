@@ -1,6 +1,7 @@
 spring:
   datasource:
-    # SPRING_DATASOURCE_URL / USERNAME / PASSWORD 환경변수로 주입 (Render 등)
+    # SPRING_DATASOURCE_URL / USERNAME / PASSWORD 환경변수로 주입 (Koyeb + Neon 등)
+    # Neon URL 예시: jdbc:postgresql://ep-xxx.us-east-2.aws.neon.tech/dbname?sslmode=require
     driver-class-name: org.postgresql.Driver
   h2:
     console:

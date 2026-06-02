@@ -27,6 +27,8 @@ jwt:
 portone:
   store-id: ${PORTONE_STORE_ID:demo-store-id}
   api-secret: ${PORTONE_API_SECRET:demo-secret}
+  channel-key: ${PORTONE_CHANNEL_KEY:demo-channel-key}
+  webhook-secret: ${PORTONE_WEBHOOK_SECRET:demo-webhook-secret}
 
 server:
   port: 8080

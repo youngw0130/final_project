@@ -36,7 +36,8 @@ public class MoimController {
             @RequestParam String inviteCode,
             @RequestParam(required = false) String refundAccountNumber,
             @RequestParam(required = false) String refundBank) {
-        return ResponseEntity.ok(moimService.joinMoim(user.getUsername(), inviteCode, refundAccountNumber, refundBank));
+        return ResponseEntity.ok(
+                moimService.joinMoim(user.getUsername(), inviteCode, refundAccountNumber, refundBank));
     }
 
     @GetMapping("/{moimId}")
@@ -45,8 +46,7 @@ public class MoimController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<MoimResponse>> getMyMoims(
-            @AuthenticationPrincipal UserDetails user) {
+    public ResponseEntity<List<MoimResponse>> getMyMoims(@AuthenticationPrincipal UserDetails user) {
         return ResponseEntity.ok(moimService.getMyMoims(user.getUsername()));
     }
 
@@ -55,7 +55,10 @@ public class MoimController {
         return ResponseEntity.ok(moimService.getParticipants(moimId));
     }
 
-    // 입금 확인 Mock (데모용: PortOne 웹훅 대신 수동 트리거)
+    /**
+     * 입금 확인 (관리자/개발 환경용 수동 트리거).
+     * 운영에서는 PortOne 웹훅이 자동으로 처리하므로 이 API는 내부 용도로만 사용.
+     */
     @PostMapping("/{moimId}/deposit/confirm")
     public ResponseEntity<Map<String, String>> confirmDeposit(
             @PathVariable Long moimId,
@@ -64,9 +67,24 @@ public class MoimController {
         return ResponseEntity.ok(Map.of("message", "입금 확인 완료"));
     }
 
-    // 넷팅 정산 트리거
+    /**
+     * 넷팅 정산 (리더만 실행 가능).
+     */
     @PostMapping("/{moimId}/settle")
-    public ResponseEntity<List<ParticipantResponse>> settle(@PathVariable Long moimId) {
-        return ResponseEntity.ok(settlementService.settle(moimId));
+    public ResponseEntity<List<ParticipantResponse>> settle(
+            @PathVariable Long moimId,
+            @AuthenticationPrincipal UserDetails user) {
+        return ResponseEntity.ok(settlementService.settle(moimId, user.getUsername()));
+    }
+
+    /**
+     * 모임 취소 (리더만 가능, OPEN 상태만).
+     */
+    @PostMapping("/{moimId}/cancel")
+    public ResponseEntity<Map<String, String>> cancelMoim(
+            @PathVariable Long moimId,
+            @AuthenticationPrincipal UserDetails user) {
+        moimService.cancelMoim(moimId, user.getUsername());
+        return ResponseEntity.ok(Map.of("message", "모임이 취소되었습니다."));
     }
 }

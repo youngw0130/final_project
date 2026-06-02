@@ -69,9 +69,9 @@ public class DemoDataLoader {
             confirmDepositByUsername(m1.id(), "sora");
             confirmDepositByUsername(m1.id(), "hyunwoo");
 
-            paymentService.pay(m1.id(), "감나빗", new CreatePaymentRequest("라멘야 부산본점", "식음료", new BigDecimal("18500")));
-            paymentService.pay(m1.id(), "감나빗", new CreatePaymentRequest("라멘야 부산본점 사이드", "식음료", new BigDecimal("62000")));
-            paymentService.pay(m1.id(), "minsu", new CreatePaymentRequest("부산본점 인근 편의점", "식음료", new BigDecimal("24000")));
+            paymentService.pay(m1.id(), "감나빗", new CreatePaymentRequest(null, "라멘야 부산본점", "식음료", new BigDecimal("18500")));
+            paymentService.pay(m1.id(), "감나빗", new CreatePaymentRequest(null, "라멘야 부산본점 사이드", "식음료", new BigDecimal("62000")));
+            paymentService.pay(m1.id(), "minsu", new CreatePaymentRequest(null, "부산본점 인근 편의점", "식음료", new BigDecimal("24000")));
 
             var m2 = moimService.createMoim("seoyeon",
                     new CreateMoimRequest("주말 캠핑 🏕️", "양양 서피비치", "🏕️",
@@ -113,9 +113,9 @@ public class DemoDataLoader {
             confirmDepositByUsername(m4.id(), "minsu");
             confirmDepositByUsername(m4.id(), "sora");
 
-            paymentService.pay(m4.id(), "hyunwoo", new CreatePaymentRequest("라멘야 부산본점", "식음료", new BigDecimal("40000")));
+            paymentService.pay(m4.id(), "hyunwoo", new CreatePaymentRequest(null, "라멘야 부산본점", "식음료", new BigDecimal("40000")));
 
-            settlementService.settle(m4.id());
+            settlementService.settle(m4.id(), "hyunwoo");
 
             log.info("[DemoDataLoader] 시드 데이터 생성 완료");
             log.info("  - 데모 로그인: 감나빗 / test1234");

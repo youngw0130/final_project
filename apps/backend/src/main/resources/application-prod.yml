@@ -15,6 +15,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
 
+portone:
+  store-id: ${PORTONE_STORE_ID}
+  api-secret: ${PORTONE_API_SECRET}
+  channel-key: ${PORTONE_CHANNEL_KEY}
+  webhook-secret: ${PORTONE_WEBHOOK_SECRET}
+
 jwt:
   secret: ${JWT_SECRET:please-change-this-default-secret-key-for-production-use-32chars}
   expiration: 86400000

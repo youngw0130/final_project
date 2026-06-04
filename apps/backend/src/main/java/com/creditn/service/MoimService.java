@@ -114,6 +114,10 @@ public class MoimService {
                 .build();
         participantRepository.save(participant);
 
+        // 링크 스코어 +5 (모임 참가)
+        userService.adjustLinkScore(user, LinkScoreReason.MOIM_JOINED.getDefaultDelta(),
+                LinkScoreReason.MOIM_JOINED, moim.getId());
+
         return MoimResponse.from(moim);
     }
 
@@ -125,8 +129,8 @@ public class MoimService {
     @Transactional(readOnly = true)
     public List<MoimResponse> getMyMoims(String username) {
         User user = getUser(username);
-        return participantRepository.findByUserId(user.getId()).stream()
-                .map(p -> MoimResponse.from(p.getMoim()))
+        return moimRepository.findMoimsByUserId(user.getId()).stream()
+                .map(MoimResponse::from)
                 .toList();
     }
 

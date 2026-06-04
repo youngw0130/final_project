@@ -64,19 +64,19 @@ class CreditNApp extends StatelessWidget {
       routes: [
         GoRoute(
           path: '/login',
-          builder: (_, _) => const LoginScreen(),
+          builder: (_, __) => const LoginScreen(),
         ),
         GoRoute(
           path: '/signup',
-          builder: (_, _) => const SignupScreen(),
+          builder: (_, __) => const SignupScreen(),
         ),
         GoRoute(
           path: '/dashboard',
-          builder: (_, _) => const DashboardScreen(),
+          builder: (_, __) => const DashboardScreen(),
         ),
         GoRoute(
           path: '/moims/create',
-          builder: (_, _) => const CreateMoimScreen(),
+          builder: (_, __) => const CreateMoimScreen(),
         ),
         GoRoute(
           path: '/moims/:id',

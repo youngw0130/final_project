@@ -25,7 +25,7 @@ class ApiClient {
   static void _checkStatus(http.Response res) {
     if (res.statusCode >= 400) {
       final body = json.decode(res.body);
-      throw ApiException(body['message'] ?? '오류가 발생했습니다. (${res.statusCode})');
+      throw ApiException(body['error'] ?? '오류가 발생했습니다. (${res.statusCode})');
     }
   }
 
@@ -135,6 +135,72 @@ class ApiClient {
     final res = await http.post(uri, headers: await _authHeaders());
     _checkStatus(res);
   }
+
+  static Future<void> cancelMoim(int moimId) async {
+    final res = await http.post(
+      Uri.parse('$_baseUrl/moims/$moimId/cancel'),
+      headers: await _authHeaders(),
+    );
+    _checkStatus(res);
+  }
+
+  // Payments
+  static Future<PaymentResponse> createPayment({
+    required int moimId,
+    required String merchantName,
+    String? category,
+    required double amount,
+    String? portOnePaymentId,
+  }) async {
+    final res = await http.post(
+      Uri.parse('$_baseUrl/moims/$moimId/payments'),
+      headers: await _authHeaders(),
+      body: json.encode({
+        'merchantName': merchantName,
+        if (category != null) 'category': category,
+        'amount': amount,
+        if (portOnePaymentId != null) 'portOnePaymentId': portOnePaymentId,
+      }),
+    );
+    _checkStatus(res);
+    return PaymentResponse.fromJson(json.decode(res.body));
+  }
+
+  static Future<List<PaymentResponse>> getPayments(int moimId) async {
+    final res = await http.get(
+      Uri.parse('$_baseUrl/moims/$moimId/payments'),
+      headers: await _authHeaders(),
+    );
+    _checkStatus(res);
+    final list = json.decode(res.body) as List;
+    return list.map((e) => PaymentResponse.fromJson(e)).toList();
+  }
+
+  // User
+  static Future<Map<String, dynamic>> getMyProfile() async {
+    final res = await http.get(
+      Uri.parse('$_baseUrl/users/me'),
+      headers: await _authHeaders(),
+    );
+    _checkStatus(res);
+    return json.decode(res.body) as Map<String, dynamic>;
+  }
+
+  static Future<List<Map<String, dynamic>>> getLinkScoreHistory() async {
+    final res = await http.get(
+      Uri.parse('$_baseUrl/users/me/link-score/history'),
+      headers: await _authHeaders(),
+    );
+    _checkStatus(res);
+    final list = json.decode(res.body) as List;
+    return list.cast<Map<String, dynamic>>();
+  }
+
+  static Future<void> saveToken(String token) =>
+      _storage.write(key: 'jwt_token', value: token);
+
+  static Future<void> deleteToken() =>
+      _storage.delete(key: 'jwt_token');
 }
 
 class ApiException implements Exception {

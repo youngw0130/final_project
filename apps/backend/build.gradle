@@ -52,3 +52,21 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootRun {
+    // 루트의 .env 파일을 읽어 JVM 환경변수로 주입
+    def envFile = rootProject.file('../../.env')
+    if (!envFile.exists()) envFile = rootProject.file('../../../.env')
+    if (envFile.exists()) {
+        envFile.readLines().each { line ->
+            line = line.trim()
+            if (line && !line.startsWith('#') && line.contains('=')) {
+                def idx = line.indexOf('=')
+                def key = line.substring(0, idx).trim()
+                def val = line.substring(idx + 1).trim()
+                    .replaceAll(/^["']/, '').replaceAll(/["']$/, '')
+                environment(key, val)
+            }
+        }
+    }
+}

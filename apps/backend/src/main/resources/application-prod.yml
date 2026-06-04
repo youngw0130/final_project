@@ -1,29 +1,26 @@
 spring:
   datasource:
-    # SPRING_DATASOURCE_URL / USERNAME / PASSWORD 환경변수로 주입 (Koyeb + Neon 등)
-    # Neon URL 예시: jdbc:postgresql://ep-xxx.us-east-2.aws.neon.tech/dbname?sslmode=require
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 20000
+      idle-timeout: 300000
   h2:
     console:
       enabled: false
   jpa:
-    open-in-view: false
     hibernate:
       ddl-auto: update
     show-sql: false
+    open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
-        jdbc:
-          batch_size: 20
-  datasource:
-    hikari:
-      maximum-pool-size: 5
-      minimum-idle: 2
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
 
 portone:
   store-id: ${PORTONE_STORE_ID}

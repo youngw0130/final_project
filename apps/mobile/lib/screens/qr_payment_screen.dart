@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../models/moim_response.dart';
 import '../models/payment_response.dart';
+import '../providers/auth_provider.dart';
 import '../providers/moim_provider.dart';
 import '../services/api_client.dart';
 import 'package:provider/provider.dart';
@@ -99,8 +100,10 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
         amount: amount,
       );
       if (!mounted) return;
-      // 잔액 갱신
-      await context.read<MoimProvider>().loadMoim(widget.moimId);
+      await Future.wait([
+        context.read<MoimProvider>().loadMoim(widget.moimId),
+        context.read<AuthProvider>().refreshProfile(),
+      ]);
       _merchantCtrl.clear();
       _amountCtrl.clear();
       setState(() => _selectedCategory = '식음료');

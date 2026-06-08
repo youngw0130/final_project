@@ -62,6 +62,15 @@ class AuthProvider extends ChangeNotifier {
     await _saveAuth(auth);
   }
 
+  Future<void> refreshProfile() async {
+    try {
+      final profile = await ApiClient.getMyProfile();
+      _linkScore = (profile['linkScore'] as num).toInt();
+      await _storage.write(key: 'link_score', value: '$_linkScore');
+      notifyListeners();
+    } catch (_) {}
+  }
+
   Future<void> logout() async {
     _token = null;
     _userId = null;

@@ -1,11 +1,59 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../services/api_client.dart';
 
-class LinkScoreScreen extends StatelessWidget {
+class LinkScoreScreen extends StatefulWidget {
   const LinkScoreScreen({super.key});
+
+  @override
+  State<LinkScoreScreen> createState() => _LinkScoreScreenState();
+}
+
+class _LinkScoreScreenState extends State<LinkScoreScreen> {
+  List<Map<String, dynamic>> _history = [];
+  bool _loading = true;
+
+  double _depositReliability = 0;
+  double _participationRate = 0;
+  double _speedRate = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    setState(() => _loading = true);
+    try {
+      final list = await ApiClient.getLinkScoreHistory();
+      if (!mounted) return;
+      _computeStats(list);
+      setState(() {
+        _history = list;
+        _loading = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _computeStats(List<Map<String, dynamic>> history) {
+    final onTime = history.where((h) => h['reason'] == 'DEPOSIT_ON_TIME').length;
+    final overdue = history.where((h) => h['reason'] == 'DEPOSIT_OVERDUE').length;
+    final joined = history.where((h) =>
+        h['reason'] == 'MOIM_JOINED' || h['reason'] == 'MOIM_CREATED').length;
+    final positive = history.where((h) => (h['delta'] as num) > 0).length;
+
+    _depositReliability =
+        (onTime + overdue) == 0 ? 1.0 : onTime / (onTime + overdue);
+    _participationRate = joined == 0 ? 0.0 : (joined / 5.0).clamp(0.0, 1.0);
+    _speedRate = history.isEmpty ? 0.0 : (positive / history.length).clamp(0.0, 1.0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +73,30 @@ class LinkScoreScreen extends StatelessWidget {
             style: TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold)),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildScoreCard(score, grade),
-            const SizedBox(height: 20),
-            _buildGradeScale(score),
-            const SizedBox(height: 20),
-            _buildStats(),
-            const SizedBox(height: 20),
-            _buildBenefits(grade),
-          ],
-        ),
-      ),
+      body: _loading
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF6366F1)))
+          : RefreshIndicator(
+              onRefresh: _loadHistory,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildScoreCard(score, grade),
+                    const SizedBox(height: 20),
+                    _buildGradeScale(score),
+                    const SizedBox(height: 20),
+                    _buildStats(),
+                    const SizedBox(height: 20),
+                    _buildBenefits(grade),
+                    const SizedBox(height: 20),
+                    _buildHistory(),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
@@ -171,6 +228,7 @@ class LinkScoreScreen extends StatelessWidget {
   }
 
   Widget _buildStats() {
+    String pct(double v) => '${(v * 100).toStringAsFixed(0)}%';
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -187,11 +245,14 @@ class LinkScoreScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 15)),
           const SizedBox(height: 16),
-          _buildStatBar('입금 성실도', 0.92, const Color(0xFF22C55E), '92%'),
+          _buildStatBar('입금 성실도', _depositReliability,
+              const Color(0xFF22C55E), pct(_depositReliability)),
           const SizedBox(height: 12),
-          _buildStatBar('참여 횟수', 0.87, const Color(0xFF6366F1), '87%'),
+          _buildStatBar('참여 횟수', _participationRate,
+              const Color(0xFF6366F1), pct(_participationRate)),
           const SizedBox(height: 12),
-          _buildStatBar('입금 속도', 0.95, const Color(0xFFF59E0B), '95%'),
+          _buildStatBar('긍정 활동', _speedRate,
+              const Color(0xFFF59E0B), pct(_speedRate)),
         ],
       ),
     );
@@ -256,6 +317,84 @@ class LinkScoreScreen extends StatelessWidget {
                   ],
                 ),
               )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHistory() {
+    if (_history.isEmpty) return const SizedBox.shrink();
+    final fmt = DateFormat('MM.dd HH:mm', 'ko_KR');
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E293B),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF334155)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('활동 내역',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15)),
+          const SizedBox(height: 12),
+          ..._history.take(10).map((h) {
+            final delta = h['delta'] as int;
+            final isPos = delta > 0;
+            final dt = DateTime.tryParse(h['createdAt']?.toString() ?? '');
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: (isPos
+                              ? const Color(0xFF22C55E)
+                              : const Color(0xFFEF4444))
+                          .withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      isPos ? Icons.arrow_upward : Icons.arrow_downward,
+                      color: isPos
+                          ? const Color(0xFF22C55E)
+                          : const Color(0xFFEF4444),
+                      size: 16,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(h['reasonDescription']?.toString() ?? '',
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 13)),
+                        if (dt != null)
+                          Text(fmt.format(dt.toLocal()),
+                              style: const TextStyle(
+                                  color: Color(0xFF64748B), fontSize: 11)),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    '${isPos ? '+' : ''}$delta',
+                    style: TextStyle(
+                        color: isPos
+                            ? const Color(0xFF22C55E)
+                            : const Color(0xFFEF4444),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                  ),
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );

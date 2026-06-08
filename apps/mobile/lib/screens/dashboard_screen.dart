@@ -15,6 +15,8 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final _fmt = NumberFormat('#,###');
+  final _scrollCtrl = ScrollController();
+  final _moimsKey = GlobalKey();
   int _navIndex = 0;
 
   @override
@@ -23,6 +25,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MoimProvider>().loadMyMoims();
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl.dispose();
+    super.dispose();
   }
 
   @override
@@ -36,6 +44,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: RefreshIndicator(
           onRefresh: () => moimProv.loadMyMoims(),
           child: SingleChildScrollView(
+            controller: _scrollCtrl,
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -47,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 16),
                 _buildQuickActions(context),
                 const SizedBox(height: 24),
-                _buildMoimsList(moimProv),
+                _buildMoimsList(moimProv, key: _moimsKey),
               ],
             ),
           ),
@@ -183,7 +192,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: [
         _quickBtn(Icons.group_add, '모임 참여', () => _showJoinDialog(context)),
         const SizedBox(width: 12),
-        _quickBtn(Icons.list_alt, '내 모임', () {}),
+        _quickBtn(Icons.list_alt, '내 모임', () {
+          Scrollable.ensureVisible(
+            _moimsKey.currentContext!,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOut,
+          );
+        }),
         const SizedBox(width: 12),
         _quickBtn(Icons.analytics_outlined, '링크스코어',
             () => context.push('/link-score')),
@@ -216,8 +231,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildMoimsList(MoimProvider prov) {
+  Widget _buildMoimsList(MoimProvider prov, {Key? key}) {
     return Column(
+      key: key,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('내 모임',

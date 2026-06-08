@@ -7,6 +7,7 @@ import '../models/moim_response.dart';
 import '../models/participant_response.dart';
 import '../providers/auth_provider.dart';
 import '../providers/moim_provider.dart';
+import 'qr_payment_screen.dart';
 
 class MoimDetailScreen extends StatefulWidget {
   final int moimId;
@@ -366,6 +367,28 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (moim.status == 'ACTIVE') ...[
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => QrPaymentScreen(moimId: widget.moimId),
+                ),
+              ).then((_) => prov.loadMoim(widget.moimId));
+            },
+            icon: const Icon(Icons.qr_code_scanner),
+            label: const Text('QR 결제'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF6366F1),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
         if (moim.status == 'ACTIVE' || moim.status == 'SETTLING')
           ElevatedButton.icon(
             onPressed: prov.loading
@@ -383,7 +406,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
             icon: const Icon(Icons.calculate_outlined),
             label: const Text('정산 시작'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6366F1),
+              backgroundColor: const Color(0xFF475569),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(

@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/auth_response.dart';
 import '../models/moim_response.dart';
 import '../models/participant_response.dart';
+import '../models/payment_response.dart';
 
 class ApiClient {
   static const String _baseUrl = String.fromEnvironment(

@@ -9,6 +9,7 @@ import 'screens/dashboard_screen.dart';
 import 'screens/create_moim_screen.dart';
 import 'screens/moim_detail_screen.dart';
 import 'screens/link_score_screen.dart';
+import 'screens/qr_payment_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,6 +84,13 @@ class CreditNApp extends StatelessWidget {
           builder: (_, state) {
             final id = int.parse(state.pathParameters['id']!);
             return MoimDetailScreen(moimId: id);
+          },
+        ),
+        GoRoute(
+          path: '/moims/:id/pay',
+          builder: (_, state) {
+            final id = int.parse(state.pathParameters['id']!);
+            return QrPaymentScreen(moimId: id);
           },
         ),
         GoRoute(

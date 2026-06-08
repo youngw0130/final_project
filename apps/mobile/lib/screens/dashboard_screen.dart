@@ -414,15 +414,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               final code = codeCtrl.text.trim();
               if (code.isEmpty) return;
               Navigator.pop(ctx);
-              final moim = await context
-                  .read<MoimProvider>()
-                  .joinMoim(inviteCode: code);
-              if (mounted && moim != null) {
-                context.push('/moims/${moim.id}');
-              } else if (mounted) {
-                final err = context.read<MoimProvider>().error;
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(err ?? '참여에 실패했습니다')));
+              final provider = context.read<MoimProvider>();
+              final messenger = ScaffoldMessenger.of(context);
+              final router = GoRouter.of(context);
+              final moim = await provider.joinMoim(inviteCode: code);
+              if (!mounted) return;
+              if (moim != null) {
+                router.push('/moims/${moim.id}');
+              } else {
+                messenger.showSnackBar(
+                    SnackBar(content: Text(provider.error ?? '참여에 실패했습니다')));
               }
             },
             child: const Text('참여하기',

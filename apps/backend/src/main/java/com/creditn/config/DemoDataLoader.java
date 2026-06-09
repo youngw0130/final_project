@@ -43,7 +43,11 @@ public class DemoDataLoader {
     CommandLineRunner seed() {
         return args -> {
             if (userRepository.count() > 0) {
-                log.info("[DemoDataLoader] 기존 데이터가 있어 시드 생성을 건너뜁니다.");
+                log.info("[DemoDataLoader] 기존 데이터 존재 - 이름 한글화 업데이트 시도");
+                updateUsername("minsu",   "민수");
+                updateUsername("sora",    "소라");
+                updateUsername("hyunwoo", "현우");
+                updateUsername("seoyeon", "서연");
                 return;
             }
             log.info("[DemoDataLoader] 시드 데이터 생성 시작");
@@ -122,6 +126,12 @@ public class DemoDataLoader {
             log.info("  - 시연 모임: ACTIVE m1={}, OPEN m2={}, OPEN m3={}, CLOSED m4={}",
                     m1.id(), m2.id(), m3.id(), m4.id());
         };
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    private void updateUsername(String oldName, String newName) {
+        int updated = userRepository.updateUsername(oldName, newName);
+        if (updated > 0) log.info("[DemoDataLoader] 이름 업데이트: {} → {}", oldName, newName);
     }
 
     private void confirmDepositByUsername(Long moimId, String username) {

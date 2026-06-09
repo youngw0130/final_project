@@ -49,10 +49,10 @@ public class DemoDataLoader {
             log.info("[DemoDataLoader] 시드 데이터 생성 시작");
 
             authService.signup(new SignupRequest("감나빗",   "gamnabit@creditn.com", "test1234", "010-1111-2222"));
-            authService.signup(new SignupRequest("minsu",    "minsu@creditn.com",    "test1234", "010-2222-3333"));
-            authService.signup(new SignupRequest("sora",     "sora@creditn.com",     "test1234", "010-3333-4444"));
-            authService.signup(new SignupRequest("hyunwoo",  "hyunwoo@creditn.com",  "test1234", "010-4444-5555"));
-            authService.signup(new SignupRequest("seoyeon",  "seoyeon@creditn.com",  "test1234", "010-5555-6666"));
+            authService.signup(new SignupRequest("민수",    "minsu@creditn.com",    "test1234", "010-2222-3333"));
+            authService.signup(new SignupRequest("소라",     "sora@creditn.com",     "test1234", "010-3333-4444"));
+            authService.signup(new SignupRequest("현우",  "hyunwoo@creditn.com",  "test1234", "010-4444-5555"));
+            authService.signup(new SignupRequest("서연",  "seoyeon@creditn.com",  "test1234", "010-5555-6666"));
 
             var m1 = moimService.createMoim("감나빗",
                     new CreateMoimRequest("라멘야 모임", "부산본점 라멘 회식 에스크로", "🍜",
@@ -60,62 +60,62 @@ public class DemoDataLoader {
                             new BigDecimal("30000"), new BigDecimal("0.07"),
                             "110-1234-5678", "토스뱅크"));
 
-            moimService.joinMoim("minsu",   m1.inviteCode(), "1002-2233-4455", "카카오뱅크");
-            moimService.joinMoim("sora",    m1.inviteCode(), "333-44-55555",   "국민은행");
-            moimService.joinMoim("hyunwoo", m1.inviteCode(), "1234-5678-9012", "신한은행");
+            moimService.joinMoim("민수",   m1.inviteCode(), "1002-2233-4455", "카카오뱅크");
+            moimService.joinMoim("소라",    m1.inviteCode(), "333-44-55555",   "국민은행");
+            moimService.joinMoim("현우", m1.inviteCode(), "1234-5678-9012", "신한은행");
 
             confirmDepositByUsername(m1.id(), "감나빗");
-            confirmDepositByUsername(m1.id(), "minsu");
-            confirmDepositByUsername(m1.id(), "sora");
-            confirmDepositByUsername(m1.id(), "hyunwoo");
+            confirmDepositByUsername(m1.id(), "민수");
+            confirmDepositByUsername(m1.id(), "소라");
+            confirmDepositByUsername(m1.id(), "현우");
 
             paymentService.pay(m1.id(), "감나빗", new CreatePaymentRequest(null, "라멘야 부산본점", "식음료", new BigDecimal("18500")));
             paymentService.pay(m1.id(), "감나빗", new CreatePaymentRequest(null, "라멘야 부산본점 사이드", "식음료", new BigDecimal("62000")));
-            paymentService.pay(m1.id(), "minsu", new CreatePaymentRequest(null, "부산본점 인근 편의점", "식음료", new BigDecimal("24000")));
+            paymentService.pay(m1.id(), "민수", new CreatePaymentRequest(null, "부산본점 인근 편의점", "식음료", new BigDecimal("24000")));
 
-            var m2 = moimService.createMoim("seoyeon",
+            var m2 = moimService.createMoim("서연",
                     new CreateMoimRequest("주말 캠핑 🏕️", "양양 서피비치", "🏕️",
                             LocalDateTime.now().plusDays(7), 3,
                             new BigDecimal("80000"), new BigDecimal("0.10"),
                             "1002-9999-0001", "카카오뱅크"));
 
             moimService.joinMoim("감나빗", m2.inviteCode(), "110-1234-5678", "토스뱅크");
-            moimService.joinMoim("hyunwoo", m2.inviteCode(), "1234-5678-9012", "신한은행");
+            moimService.joinMoim("현우", m2.inviteCode(), "1234-5678-9012", "신한은행");
 
-            confirmDepositByUsername(m2.id(), "seoyeon");
+            confirmDepositByUsername(m2.id(), "서연");
 
             /* ── m3: 일부만 입금 (OPEN) ───────────────────────── */
-            var m3 = moimService.createMoim("minsu",
+            var m3 = moimService.createMoim("민수",
                     new CreateMoimRequest("헬스 PT 🏋️", "강남 PT 10회권 분담", "🏋️",
                             LocalDateTime.now().plusDays(5), 4,
                             new BigDecimal("50000"), new BigDecimal("0.07"),
                             "1002-2233-4455", "카카오뱅크"));
 
-            moimService.joinMoim("sora",    m3.inviteCode(), "333-44-55555",   "국민은행");
-            moimService.joinMoim("seoyeon", m3.inviteCode(), "1002-9999-0001", "카카오뱅크");
-            moimService.joinMoim("hyunwoo", m3.inviteCode(), "1234-5678-9012", "신한은행");
+            moimService.joinMoim("소라",    m3.inviteCode(), "333-44-55555",   "국민은행");
+            moimService.joinMoim("서연", m3.inviteCode(), "1002-9999-0001", "카카오뱅크");
+            moimService.joinMoim("현우", m3.inviteCode(), "1234-5678-9012", "신한은행");
 
-            confirmDepositByUsername(m3.id(), "minsu");
-            confirmDepositByUsername(m3.id(), "sora");
+            confirmDepositByUsername(m3.id(), "민수");
+            confirmDepositByUsername(m3.id(), "소라");
             /* seoyeon, hyunwoo: 미입금 → 독촉/입금 버튼 시연용 */
 
             /* ── m4: 정산 완료 (CLOSED) ───────────────────────── */
-            var m4 = moimService.createMoim("hyunwoo",
+            var m4 = moimService.createMoim("현우",
                     new CreateMoimRequest("라멘야 모임", "정산 완료 시연용(전월 건)", "🍜",
                             LocalDateTime.now().minusDays(30), 3,
                             new BigDecimal("25000"), new BigDecimal("0.07"),
                             "1234-5678-9012", "신한은행"));
 
-            moimService.joinMoim("minsu", m4.inviteCode(), "1002-2233-4455", "카카오뱅크");
-            moimService.joinMoim("sora",  m4.inviteCode(), "333-44-55555",   "국민은행");
+            moimService.joinMoim("민수", m4.inviteCode(), "1002-2233-4455", "카카오뱅크");
+            moimService.joinMoim("소라",  m4.inviteCode(), "333-44-55555",   "국민은행");
 
-            confirmDepositByUsername(m4.id(), "hyunwoo");
-            confirmDepositByUsername(m4.id(), "minsu");
-            confirmDepositByUsername(m4.id(), "sora");
+            confirmDepositByUsername(m4.id(), "현우");
+            confirmDepositByUsername(m4.id(), "민수");
+            confirmDepositByUsername(m4.id(), "소라");
 
-            paymentService.pay(m4.id(), "hyunwoo", new CreatePaymentRequest(null, "라멘야 부산본점", "식음료", new BigDecimal("40000")));
+            paymentService.pay(m4.id(), "현우", new CreatePaymentRequest(null, "라멘야 부산본점", "식음료", new BigDecimal("40000")));
 
-            settlementService.settle(m4.id(), "hyunwoo");
+            settlementService.settle(m4.id(), "현우");
 
             log.info("[DemoDataLoader] 시드 데이터 생성 완료");
             log.info("  - 데모 로그인: 감나빗 / test1234");

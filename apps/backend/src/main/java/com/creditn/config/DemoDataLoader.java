@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ public class DemoDataLoader {
     private final PaymentService paymentService;
     private final SettlementService settlementService;
     private final UserRepository userRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     CommandLineRunner seed() {
         return args -> {
@@ -128,9 +130,8 @@ public class DemoDataLoader {
         };
     }
 
-    @org.springframework.transaction.annotation.Transactional
     private void updateUsername(String oldName, String newName) {
-        int updated = userRepository.updateUsername(oldName, newName);
+        int updated = jdbcTemplate.update("UPDATE users SET username = ? WHERE username = ?", newName, oldName);
         if (updated > 0) log.info("[DemoDataLoader] 이름 업데이트: {} → {}", oldName, newName);
     }
 

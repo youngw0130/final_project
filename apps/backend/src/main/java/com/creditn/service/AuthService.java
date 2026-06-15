@@ -31,7 +31,11 @@ public class AuthService {
                 .username(req.username())
                 .email(req.email())
                 .password(passwordEncoder.encode(req.password()))
+                .realName(req.realName())
                 .phoneNumber(req.phoneNumber())
+                .refundBank(req.refundBank())
+                .refundAccountNumber(req.refundAccountNumber())
+                .refundAccountHolder(req.refundAccountHolder())
                 .build();
         userRepository.save(user);
         String token = jwtUtil.generateToken(user.getUsername());

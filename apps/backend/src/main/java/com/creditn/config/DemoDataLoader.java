@@ -54,11 +54,11 @@ public class DemoDataLoader {
             }
             log.info("[DemoDataLoader] 시드 데이터 생성 시작");
 
-            authService.signup(new SignupRequest("감나빗",   "gamnabit@creditn.com", "test1234", "010-1111-2222"));
-            authService.signup(new SignupRequest("민수",    "minsu@creditn.com",    "test1234", "010-2222-3333"));
-            authService.signup(new SignupRequest("소라",     "sora@creditn.com",     "test1234", "010-3333-4444"));
-            authService.signup(new SignupRequest("현우",  "hyunwoo@creditn.com",  "test1234", "010-4444-5555"));
-            authService.signup(new SignupRequest("서연",  "seoyeon@creditn.com",  "test1234", "010-5555-6666"));
+            authService.signup(new SignupRequest("감나빗", "gamnabit@creditn.com", "test1234", "감나빗", "010-1111-2222", "국민은행", "110-1111-1111", "감나빗"));
+            authService.signup(new SignupRequest("민수",   "minsu@creditn.com",    "test1234", "민수",   "010-2222-3333", "신한은행", "110-2222-2222", "민수"));
+            authService.signup(new SignupRequest("소라",   "sora@creditn.com",     "test1234", "소라",   "010-3333-4444", "카카오뱅크", "110-3333-3333", "소라"));
+            authService.signup(new SignupRequest("현우",   "hyunwoo@creditn.com",  "test1234", "현우",   "010-4444-5555", "우리은행", "110-4444-4444", "현우"));
+            authService.signup(new SignupRequest("서연",   "seoyeon@creditn.com",  "test1234", "서연",   "010-5555-6666", "하나은행", "110-5555-5555", "서연"));
 
             var m1 = moimService.createMoim("감나빗",
                     new CreateMoimRequest("라멘야 모임", "부산본점 라멘 회식 에스크로", "🍜",

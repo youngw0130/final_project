@@ -43,8 +43,22 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "real_name", length = 50)
+    private String realName;
+
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
+
+    /* ────────────────── 환불 계좌 정보 ────────────────── */
+
+    @Column(name = "refund_bank", length = 30)
+    private String refundBank;
+
+    @Column(name = "refund_account_number", length = 30)
+    private String refundAccountNumber;
+
+    @Column(name = "refund_account_holder", length = 50)
+    private String refundAccountHolder;
 
     /* ────────────────── 링크 스코어 ────────────────── */
 
@@ -69,12 +83,18 @@ public class User extends BaseTimeEntity {
     /* ────────────────── 생성자 ────────────────── */
 
     @Builder
-    public User(String username, String email, String password, String phoneNumber) {
-        this.username    = username;
-        this.email       = email;
-        this.password    = password;
-        this.phoneNumber = phoneNumber;
-        this.linkScore   = 500;
+    public User(String username, String email, String password,
+                String realName, String phoneNumber,
+                String refundBank, String refundAccountNumber, String refundAccountHolder) {
+        this.username              = username;
+        this.email                 = email;
+        this.password              = password;
+        this.realName              = realName;
+        this.phoneNumber           = phoneNumber;
+        this.refundBank            = refundBank;
+        this.refundAccountNumber   = refundAccountNumber;
+        this.refundAccountHolder   = refundAccountHolder;
+        this.linkScore             = 500;
     }
 
     /* ────────────────── 도메인 메서드 ────────────────── */

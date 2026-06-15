@@ -51,13 +51,21 @@ class AuthProvider extends ChangeNotifier {
     required String username,
     required String email,
     required String password,
+    String? realName,
     String? phoneNumber,
+    String? refundBank,
+    String? refundAccountNumber,
+    String? refundAccountHolder,
   }) async {
     final auth = await ApiClient.signup(
       username: username,
       email: email,
       password: password,
+      realName: realName,
       phoneNumber: phoneNumber,
+      refundBank: refundBank,
+      refundAccountNumber: refundAccountNumber,
+      refundAccountHolder: refundAccountHolder,
     );
     await _saveAuth(auth);
   }

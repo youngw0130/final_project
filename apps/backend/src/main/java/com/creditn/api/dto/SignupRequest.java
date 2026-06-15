@@ -8,5 +8,9 @@ public record SignupRequest(
         @NotBlank @Size(min = 2, max = 50) String username,
         @NotBlank @Email String email,
         @NotBlank @Size(min = 6) String password,
-        String phoneNumber
+        String realName,
+        String phoneNumber,
+        String refundBank,
+        String refundAccountNumber,
+        String refundAccountHolder
 ) {}

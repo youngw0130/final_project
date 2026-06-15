@@ -9,9 +9,13 @@ import '../models/payment_response.dart';
 class ApiClient {
   static const String _baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8080/api', // Android 에뮬레이터 → 로컬호스트
+    defaultValue: 'https://final-project-cx68.onrender.com/api',
   );
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
+
+  // Render 무료 플랜 콜드 스타트 대비 타임아웃
+  static const _loginTimeout = Duration(seconds: 120);
+  static const _timeout = Duration(seconds: 30);
 
   static Future<String?> _getToken() => _storage.read(key: 'jwt_token');
 
@@ -25,8 +29,14 @@ class ApiClient {
 
   static void _checkStatus(http.Response res) {
     if (res.statusCode >= 400) {
-      final body = json.decode(res.body);
-      throw ApiException(body['error'] ?? '오류가 발생했습니다. (${res.statusCode})');
+      try {
+        final body = json.decode(res.body);
+        throw ApiException(body['error'] ?? '오류가 발생했습니다. (${res.statusCode})');
+      } on ApiException {
+        rethrow;
+      } catch (_) {
+        throw ApiException('서버 오류가 발생했습니다. (${res.statusCode})');
+      }
     }
   }
 
@@ -35,7 +45,11 @@ class ApiClient {
     required String username,
     required String email,
     required String password,
+    String? realName,
     String? phoneNumber,
+    String? refundBank,
+    String? refundAccountNumber,
+    String? refundAccountHolder,
   }) async {
     final res = await http.post(
       Uri.parse('$_baseUrl/auth/signup'),
@@ -44,9 +58,13 @@ class ApiClient {
         'username': username,
         'email': email,
         'password': password,
+        if (realName != null) 'realName': realName,
         if (phoneNumber != null) 'phoneNumber': phoneNumber,
+        if (refundBank != null) 'refundBank': refundBank,
+        if (refundAccountNumber != null) 'refundAccountNumber': refundAccountNumber,
+        if (refundAccountHolder != null) 'refundAccountHolder': refundAccountHolder,
       }),
-    );
+    ).timeout(_loginTimeout);
     _checkStatus(res);
     return AuthResponse.fromJson(json.decode(res.body));
   }
@@ -59,7 +77,7 @@ class ApiClient {
       Uri.parse('$_baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'username': username, 'password': password}),
-    );
+    ).timeout(_loginTimeout);
     _checkStatus(res);
     return AuthResponse.fromJson(json.decode(res.body));
   }
@@ -70,7 +88,7 @@ class ApiClient {
       Uri.parse('$_baseUrl/moims'),
       headers: await _authHeaders(),
       body: json.encode(data),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     return MoimResponse.fromJson(json.decode(res.body));
   }
@@ -86,7 +104,7 @@ class ApiClient {
       if (refundAccountNumber != null) 'refundAccountNumber': refundAccountNumber,
     };
     final uri = Uri.parse('$_baseUrl/moims/join').replace(queryParameters: params);
-    final res = await http.post(uri, headers: await _authHeaders());
+    final res = await http.post(uri, headers: await _authHeaders()).timeout(_timeout);
     _checkStatus(res);
     return MoimResponse.fromJson(json.decode(res.body));
   }
@@ -95,7 +113,7 @@ class ApiClient {
     final res = await http.get(
       Uri.parse('$_baseUrl/moims/$moimId'),
       headers: await _authHeaders(),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     return MoimResponse.fromJson(json.decode(res.body));
   }
@@ -104,7 +122,7 @@ class ApiClient {
     final res = await http.get(
       Uri.parse('$_baseUrl/moims/my'),
       headers: await _authHeaders(),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     final list = json.decode(res.body) as List;
     return list.map((e) => MoimResponse.fromJson(e)).toList();
@@ -114,7 +132,7 @@ class ApiClient {
     final res = await http.get(
       Uri.parse('$_baseUrl/moims/$moimId/participants'),
       headers: await _authHeaders(),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     final list = json.decode(res.body) as List;
     return list.map((e) => ParticipantResponse.fromJson(e)).toList();
@@ -124,7 +142,7 @@ class ApiClient {
     final res = await http.post(
       Uri.parse('$_baseUrl/moims/$moimId/settle'),
       headers: await _authHeaders(),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     final list = json.decode(res.body) as List;
     return list.map((e) => ParticipantResponse.fromJson(e)).toList();
@@ -133,7 +151,7 @@ class ApiClient {
   static Future<void> confirmDeposit(int moimId, int userId) async {
     final uri = Uri.parse('$_baseUrl/moims/$moimId/deposit/confirm')
         .replace(queryParameters: {'userId': '$userId'});
-    final res = await http.post(uri, headers: await _authHeaders());
+    final res = await http.post(uri, headers: await _authHeaders()).timeout(_timeout);
     _checkStatus(res);
   }
 
@@ -141,7 +159,7 @@ class ApiClient {
     final res = await http.post(
       Uri.parse('$_baseUrl/moims/$moimId/cancel'),
       headers: await _authHeaders(),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
   }
 
@@ -162,7 +180,7 @@ class ApiClient {
         'amount': amount,
         if (portOnePaymentId != null) 'portOnePaymentId': portOnePaymentId,
       }),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     return PaymentResponse.fromJson(json.decode(res.body));
   }
@@ -171,7 +189,7 @@ class ApiClient {
     final res = await http.get(
       Uri.parse('$_baseUrl/moims/$moimId/payments'),
       headers: await _authHeaders(),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     final list = json.decode(res.body) as List;
     return list.map((e) => PaymentResponse.fromJson(e)).toList();
@@ -182,7 +200,7 @@ class ApiClient {
     final res = await http.get(
       Uri.parse('$_baseUrl/users/me'),
       headers: await _authHeaders(),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     return json.decode(res.body) as Map<String, dynamic>;
   }
@@ -191,7 +209,7 @@ class ApiClient {
     final res = await http.get(
       Uri.parse('$_baseUrl/users/me/link-score/history'),
       headers: await _authHeaders(),
-    );
+    ).timeout(_timeout);
     _checkStatus(res);
     final list = json.decode(res.body) as List;
     return list.cast<Map<String, dynamic>>();

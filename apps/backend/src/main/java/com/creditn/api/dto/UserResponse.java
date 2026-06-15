@@ -8,7 +8,11 @@ public record UserResponse(
         Long id,
         String username,
         String email,
+        String realName,
         String phoneNumber,
+        String refundBank,
+        String refundAccountNumber,
+        String refundAccountHolder,
         Integer linkScore,
         LocalDateTime linkScoreUpdatedAt
 ) {
@@ -17,7 +21,11 @@ public record UserResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getRealName(),
                 user.getPhoneNumber(),
+                user.getRefundBank(),
+                user.getRefundAccountNumber(),
+                user.getRefundAccountHolder(),
                 user.getLinkScore(),
                 user.getLinkScoreUpdatedAt()
         );

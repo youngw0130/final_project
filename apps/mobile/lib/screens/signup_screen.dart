@@ -143,6 +143,12 @@ class _SignupScreenState extends State<SignupScreen>
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.message)));
       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('네트워크 오류가 발생했습니다. 다시 시도해 주세요.')),
+        );
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }

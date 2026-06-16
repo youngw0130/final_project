@@ -569,7 +569,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   fontWeight: FontWeight.w500)),
           const SizedBox(height: 2),
           GestureDetector(
-            onTap: () => context.push('/moims/${moim.id}'),
+            onTap: () async {
+              await Future.delayed(const Duration(milliseconds: 350));
+              if (context.mounted) context.push('/moims/${moim.id}');
+            },
             child: Text('${moim.emoji ?? '🎉'} ${moim.title}',
                 style: const TextStyle(
                     color: Color(0xFF1F2937),
@@ -1299,7 +1302,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final isOpen = moim.status == 'OPEN';
 
     return GestureDetector(
-      onTap: () => context.push('/moims/${moim.id}'),
+      onTap: () async {
+        await Future.delayed(const Duration(milliseconds: 350));
+        if (context.mounted) context.push('/moims/${moim.id}');
+      },
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(12),
@@ -1869,11 +1875,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String _statusLabel(String status) {
     switch (status) {
       case 'OPEN':
-        return '모집중';
+        return '입금 대기';
       case 'ACTIVE':
-        return '진행중';
+        return '진행 중';
       case 'SETTLING':
-        return '정산중';
+        return '진행 중';
       case 'CLOSED':
         return '완료';
       default:

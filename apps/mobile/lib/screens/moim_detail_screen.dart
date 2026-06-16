@@ -680,7 +680,9 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
-              value: moim.depositRate.clamp(0.0, 1.0),
+              value: moim.targetParticipantCount > 0
+                  ? (depositedCount / moim.targetParticipantCount).clamp(0.0, 1.0)
+                  : 0.0,
               backgroundColor: const Color(0xFFE5E7EB),
               valueColor:
                   const AlwaysStoppedAnimation<Color>(Color(0xFF0052FF)),
@@ -1018,8 +1020,87 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
             onPressed: prov.loading
                 ? null
                 : () async {
-                    final result = await prov.settle(widget.moimId);
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        title: const Text('정산하기',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${moim.emoji ?? '📋'} ${moim.title}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15)),
+                            const SizedBox(height: 8),
+                            const Text(
+                              '정산을 진행하면 에스크로 잔액을 바탕으로\n자동 정산이 완료됩니다.\n\n정산 후에는 되돌릴 수 없습니다.',
+                              style: TextStyle(
+                                  color: Color(0xFF6B7280), fontSize: 13),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx, false),
+                            child: const Text('취소',
+                                style: TextStyle(color: Color(0xFF6B7280))),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.pop(ctx, true),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF0052FF),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: const Text('정산 진행',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed != true || !mounted) return;
+                    // 로딩 다이얼로그 표시
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (ctx) => Dialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 32, horizontal: 24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const CircularProgressIndicator(
+                                  color: Color(0xFF0052FF)),
+                              const SizedBox(height: 20),
+                              const Text('정산 처리 중...',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16)),
+                              const SizedBox(height: 6),
+                              const Text('에스크로 잔액을 정산하고 있습니다',
+                                  style: TextStyle(
+                                      color: Color(0xFF6B7280),
+                                      fontSize: 13)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                    // 최소 1.5초 로딩 보장
+                    final results = await Future.wait([
+                      prov.settle(widget.moimId),
+                      Future.delayed(const Duration(milliseconds: 1500)),
+                    ]);
                     if (!mounted) return;
+                    Navigator.pop(context); // 로딩 다이얼로그 닫기
+                    final result = results[0] as List<ParticipantResponse>;
                     if (result.isNotEmpty) {
                       Navigator.push(
                         context,
@@ -1039,11 +1120,11 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
                     }
                   },
             icon: const Icon(Icons.calculate_outlined, color: Colors.white),
-            label: const Text('정산 시작',
+            label: const Text('정산하기',
                 style: TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold)),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF374151),
+              backgroundColor: const Color(0xFF0052FF),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
@@ -1463,15 +1544,15 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
     final colors = {
       'OPEN': const Color(0xFF00A864),
       'ACTIVE': const Color(0xFF0052FF),
-      'SETTLING': const Color(0xFFD97706),
+      'SETTLING': const Color(0xFF0052FF),
       'CLOSED': const Color(0xFF9CA3AF),
       'CANCELLED': const Color(0xFFEF4444),
     };
     final labels = {
       'OPEN': '입금 대기',
       'ACTIVE': '진행 중',
-      'SETTLING': '정산 중',
-      'CLOSED': '종료',
+      'SETTLING': '진행 중',
+      'CLOSED': '완료',
       'CANCELLED': '취소',
     };
     final c = colors[status] ?? const Color(0xFF9CA3AF);
@@ -1493,15 +1574,15 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
     final colors = {
       'OPEN': const Color(0xFF00A864),
       'ACTIVE': const Color(0xFF0052FF),
-      'SETTLING': const Color(0xFFD97706),
+      'SETTLING': const Color(0xFF0052FF),
       'CLOSED': const Color(0xFF9CA3AF),
       'CANCELLED': const Color(0xFFEF4444),
     };
     final labels = {
       'OPEN': '입금 대기',
       'ACTIVE': '진행 중',
-      'SETTLING': '정산 중',
-      'CLOSED': '종료',
+      'SETTLING': '진행 중',
+      'CLOSED': '완료',
       'CANCELLED': '취소',
     };
     final c = colors[status] ?? const Color(0xFF9CA3AF);

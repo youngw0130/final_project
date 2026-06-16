@@ -14,6 +14,9 @@ public interface MoimRepository extends JpaRepository<Moim, Long> {
     List<Moim> findByCreatorId(Long creatorId);
     List<Moim> findByStatus(MoimStatus status);
 
-    @Query("SELECT DISTINCT m FROM Moim m JOIN FETCH m.participants p JOIN FETCH p.user WHERE p.user.id = :userId")
+    @Query("SELECT DISTINCT m FROM Moim m JOIN FETCH m.creator JOIN FETCH m.participants p JOIN FETCH p.user WHERE p.user.id = :userId")
     List<Moim> findMoimsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT m FROM Moim m JOIN FETCH m.creator LEFT JOIN FETCH m.participants p LEFT JOIN FETCH p.user WHERE m.id = :id")
+    Optional<Moim> findByIdWithDetails(@Param("id") Long id);
 }

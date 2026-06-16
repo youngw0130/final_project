@@ -268,7 +268,7 @@ public class MoimService {
     }
 
     public Moim getMoimById(Long moimId) {
-        return moimRepository.findById(moimId)
+        return moimRepository.findByIdWithDetails(moimId)
                 .orElseThrow(() -> new IllegalArgumentException("모임을 찾을 수 없습니다."));
     }
 }

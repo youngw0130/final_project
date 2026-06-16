@@ -13,9 +13,9 @@ class ApiClient {
   );
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
-  // Render 무료 플랜 콜드 스타트 대비 타임아웃
-  static const _loginTimeout = Duration(seconds: 120);
-  static const _timeout = Duration(seconds: 30);
+  static const _loginTimeout = Duration(seconds: 60);
+  static const _timeout = Duration(seconds: 15);
+  static const _warmTimeout = Duration(seconds: 60);
 
   static Future<String?> _getToken() => _storage.read(key: 'jwt_token');
 
@@ -213,6 +213,15 @@ class ApiClient {
     _checkStatus(res);
     final list = json.decode(res.body) as List;
     return list.cast<Map<String, dynamic>>();
+  }
+
+  // Render 콜드 스타트 예방 - 앱 시작 시 백그라운드에서 호출
+  static Future<void> warmUp() async {
+    try {
+      await http.get(
+        Uri.parse('${_baseUrl.replaceAll('/api', '')}/api/ping'),
+      ).timeout(_warmTimeout);
+    } catch (_) {}
   }
 
   static Future<void> saveToken(String token) =>

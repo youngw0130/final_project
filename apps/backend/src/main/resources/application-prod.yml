@@ -6,9 +6,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 5
-      minimum-idle: 1
-      connection-timeout: 20000
+      minimum-idle: 2
+      connection-timeout: 10000
       idle-timeout: 300000
+      keepalive-time: 60000
   h2:
     console:
       enabled: false
@@ -34,12 +35,16 @@ jwt:
 
 server:
   port: ${PORT:8080}
+  compression:
+    enabled: true
+    mime-types: application/json,text/plain
+    min-response-size: 1024
 
 management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,ping
   endpoint:
     health:
       show-details: never

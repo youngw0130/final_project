@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/moim_provider.dart';
+import 'services/api_client.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/dashboard_screen.dart';
@@ -16,6 +17,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final authProvider = AuthProvider();
   await authProvider.initialize();
+  // 백그라운드에서 서버 워밍업 (콜드 스타트 예방)
+  ApiClient.warmUp();
   runApp(CreditNApp(authProvider: authProvider));
 }
 

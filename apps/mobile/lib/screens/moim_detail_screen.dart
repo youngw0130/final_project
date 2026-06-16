@@ -27,9 +27,11 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final prov = context.read<MoimProvider>();
-      prov.loadMoim(widget.moimId);
-      prov.loadParticipants(widget.moimId);
-      prov.loadPayments(widget.moimId);
+      Future.wait([
+        prov.loadMoim(widget.moimId),
+        prov.loadParticipants(widget.moimId),
+        prov.loadPayments(widget.moimId),
+      ]);
     });
   }
 

@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import '../models/moim_response.dart';
 import '../models/participant_response.dart';
+import '../models/payment_response.dart';
 import '../services/api_client.dart';
 
 class MoimProvider extends ChangeNotifier {
   List<MoimResponse> _moims = [];
   MoimResponse? _selectedMoim;
   List<ParticipantResponse> _participants = [];
+  List<PaymentResponse> _payments = [];
   bool _loading = false;
   String? _error;
 
   List<MoimResponse> get moims => _moims;
   MoimResponse? get selectedMoim => _selectedMoim;
   List<ParticipantResponse> get participants => _participants;
+  List<PaymentResponse> get payments => _payments;
   bool get loading => _loading;
   String? get error => _error;
 
@@ -26,8 +29,10 @@ class MoimProvider extends ChangeNotifier {
     _error = null;
     try {
       _moims = await ApiClient.getMyMoims();
-    } catch (e) {
+      debugPrint('[MoimProvider] loaded ${_moims.length} moims');
+    } catch (e, st) {
       _error = e.toString();
+      debugPrint('[MoimProvider] loadMyMoims error: $e\n$st');
     } finally {
       _setLoading(false);
     }
@@ -48,15 +53,25 @@ class MoimProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> loadPayments(int moimId) async {
+    _error = null;
+    try {
+      _payments = await ApiClient.getPayments(moimId);
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+    }
+  }
+
   Future<void> loadParticipants(int moimId) async {
-    _setLoading(true);
     _error = null;
     try {
       _participants = await ApiClient.getParticipants(moimId);
+      debugPrint('[MoimProvider] loaded ${_participants.length} participants for moim $moimId: ${_participants.map((p) => p.username).toList()}');
+      notifyListeners();
     } catch (e) {
       _error = e.toString();
-    } finally {
-      _setLoading(false);
+      debugPrint('[MoimProvider] loadParticipants error: $e');
     }
   }
 
@@ -95,6 +110,23 @@ class MoimProvider extends ChangeNotifier {
     } catch (e) {
       _error = e.toString();
       return null;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<bool> cancelMoim(int moimId) async {
+    _setLoading(true);
+    _error = null;
+    try {
+      await ApiClient.cancelMoim(moimId);
+      _moims.removeWhere((m) => m.id == moimId);
+      if (_selectedMoim?.id == moimId) _selectedMoim = null;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      return false;
     } finally {
       _setLoading(false);
     }

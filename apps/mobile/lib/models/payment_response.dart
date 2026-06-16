@@ -20,12 +20,12 @@ class PaymentResponse {
   factory PaymentResponse.fromJson(Map<String, dynamic> json) {
     return PaymentResponse(
       id: json['id'] as int,
-      moimId: json['moimId'] as int,
-      merchantName: json['merchantName'] as String,
+      moimId: (json['moimId'] as int?) ?? 0,
+      merchantName: (json['merchantName'] as String?) ?? '',
       category: json['category'] as String?,
-      amount: (json['amount'] as num).toDouble(),
-      approvedAt: json['approvedAt'] as String,
-      status: json['status'] as String,
+      amount: ((json['amount'] ?? 0) as num).toDouble(),
+      approvedAt: (json['approvedAt'] as String?) ?? '',
+      status: (json['status'] as String?) ?? 'APPROVED',
     );
   }
 }

@@ -1,5 +1,6 @@
 class MoimResponse {
   final int id;
+  final int? creatorId;
   final String title;
   final String? description;
   final String? emoji;
@@ -18,6 +19,7 @@ class MoimResponse {
 
   MoimResponse({
     required this.id,
+    this.creatorId,
     required this.title,
     this.description,
     this.emoji,
@@ -37,21 +39,22 @@ class MoimResponse {
 
   factory MoimResponse.fromJson(Map<String, dynamic> json) => MoimResponse(
         id: json['id'] as int,
-        title: json['title'] as String,
+        creatorId: json['creatorId'] as int?,
+        title: (json['title'] as String?) ?? '',
         description: json['description'] as String?,
         emoji: json['emoji'] as String?,
-        status: json['status'] as String,
-        targetAmount: (json['targetAmount'] as num).toDouble(),
-        totalDeposited: (json['totalDeposited'] as num).toDouble(),
-        totalSpent: (json['totalSpent'] as num).toDouble(),
-        depositPerPerson: (json['depositPerPerson'] as num).toDouble(),
-        bufferRate: (json['bufferRate'] as num).toDouble(),
-        targetParticipantCount: json['targetParticipantCount'] as int,
-        inviteCode: json['inviteCode'] as String,
+        status: (json['status'] as String?) ?? 'OPEN',
+        targetAmount: ((json['targetAmount'] ?? 0) as num).toDouble(),
+        totalDeposited: ((json['totalDeposited'] ?? 0) as num).toDouble(),
+        totalSpent: ((json['totalSpent'] ?? 0) as num).toDouble(),
+        depositPerPerson: ((json['depositPerPerson'] ?? 0) as num).toDouble(),
+        bufferRate: ((json['bufferRate'] ?? 0) as num).toDouble(),
+        targetParticipantCount: (json['targetParticipantCount'] as int?) ?? 0,
+        inviteCode: (json['inviteCode'] as String?) ?? '',
         virtualAccountNumber: json['virtualAccountNumber'] as String?,
         virtualAccountBank: json['virtualAccountBank'] as String?,
         scheduledAt: json['scheduledAt'] as String?,
-        createdAt: json['createdAt'] as String,
+        createdAt: (json['createdAt'] as String?) ?? '',
       );
 
   double get balance => totalDeposited - totalSpent;

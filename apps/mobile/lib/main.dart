@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -18,34 +19,52 @@ void main() async {
   runApp(CreditNApp(authProvider: authProvider));
 }
 
-class CreditNApp extends StatelessWidget {
+class CreditNApp extends StatefulWidget {
   final AuthProvider authProvider;
   const CreditNApp({super.key, required this.authProvider});
+
+  @override
+  State<CreditNApp> createState() => _CreditNAppState();
+}
+
+class _CreditNAppState extends State<CreditNApp> {
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _router = _buildRouter(widget.authProvider);
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: authProvider),
+        ChangeNotifierProvider.value(value: widget.authProvider),
         ChangeNotifierProvider(create: (_) => MoimProvider()),
       ],
-      child: Builder(
-        builder: (context) {
-          final router = _buildRouter(context.watch<AuthProvider>());
-          return MaterialApp.router(
-            title: 'Credit-N',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              colorScheme: ColorScheme.dark(
-                primary: const Color(0xFF6366F1),
-                surface: const Color(0xFF1E293B),
-              ),
-              scaffoldBackgroundColor: const Color(0xFF0F172A),
-              fontFamily: 'Pretendard',
-            ),
-            routerConfig: router,
-          );
-        },
+      child: MaterialApp.router(
+        title: 'Credit-N',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.light(
+            primary: const Color(0xFF0052FF),
+            surface: Colors.white,
+            background: const Color(0xFFF0F4FF),
+          ),
+          scaffoldBackgroundColor: const Color(0xFFF0F4FF),
+          fontFamily: 'Pretendard',
+          useMaterial3: true,
+        ),
+        routerConfig: _router,
+        builder: kIsWeb
+            ? (context, child) => Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 430),
+                    child: child!,
+                  ),
+                )
+            : null,
       ),
     );
   }

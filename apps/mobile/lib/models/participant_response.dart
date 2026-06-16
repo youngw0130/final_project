@@ -23,11 +23,11 @@ class ParticipantResponse {
 
   factory ParticipantResponse.fromJson(Map<String, dynamic> json) =>
       ParticipantResponse(
-        userId: json['userId'] as int,
-        username: json['username'] as String,
-        linkScore: json['linkScore'] as int,
-        depositAmount: (json['depositAmount'] as num).toDouble(),
-        depositStatus: json['depositStatus'] as String,
+        userId: (json['userId'] as int?) ?? 0,
+        username: (json['username'] as String?) ?? '',
+        linkScore: (json['linkScore'] as int?) ?? 0,
+        depositAmount: ((json['depositAmount'] ?? 0) as num).toDouble(),
+        depositStatus: (json['depositStatus'] as String?) ?? 'PENDING',
         refundBank: json['refundBank'] as String?,
         refundAccountNumber: json['refundAccountNumber'] as String?,
         refundAmount: json['refundAmount'] != null

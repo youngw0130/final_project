@@ -24,6 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      context.read<AuthProvider>().refreshProfile();
       final prov = context.read<MoimProvider>();
       await prov.loadMyMoims();
       if (prov.moims.isNotEmpty) {
@@ -43,6 +44,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _onRefresh() async {
+    await context.read<AuthProvider>().refreshProfile();
     final prov = context.read<MoimProvider>();
     await prov.loadMyMoims();
     if (prov.moims.isNotEmpty) {

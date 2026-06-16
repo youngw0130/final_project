@@ -32,6 +32,7 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
   Future<void> _loadHistory() async {
     setState(() => _loading = true);
     try {
+      await context.read<AuthProvider>().refreshProfile();
       final list = await ApiClient.getLinkScoreHistory();
       if (!mounted) return;
       _computeStats(list);

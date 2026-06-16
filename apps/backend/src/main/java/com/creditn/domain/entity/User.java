@@ -69,7 +69,7 @@ public class User extends BaseTimeEntity {
      * - 기한 초과 미입금   : -10
      */
     @Column(name = "link_score", nullable = false)
-    private Integer linkScore = 500;
+    private Integer linkScore = 0;
 
     @Column(name = "link_score_updated_at")
     private java.time.LocalDateTime linkScoreUpdatedAt;
@@ -94,7 +94,7 @@ public class User extends BaseTimeEntity {
         this.refundBank            = refundBank;
         this.refundAccountNumber   = refundAccountNumber;
         this.refundAccountHolder   = refundAccountHolder;
-        this.linkScore             = 500;
+        this.linkScore             = 0;
     }
 
     /* ────────────────── 도메인 메서드 ────────────────── */

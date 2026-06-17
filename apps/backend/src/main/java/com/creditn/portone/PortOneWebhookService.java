@@ -51,12 +51,15 @@ public class PortOneWebhookService {
         }
 
         try {
+            // whsec_ prefix 제거 후 Base64 디코딩 (Svix 포맷)
+            String rawSecret = props.getWebhookSecret();
+            byte[] secretBytes = rawSecret.startsWith("whsec_")
+                    ? Base64.getDecoder().decode(rawSecret.substring("whsec_".length()))
+                    : rawSecret.getBytes(StandardCharsets.UTF_8);
+
             String signedContent = webhookId + "." + webhookTimestamp + "." + rawBody;
             Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(
-                    props.getWebhookSecret().getBytes(StandardCharsets.UTF_8),
-                    "HmacSHA256"
-            ));
+            mac.init(new SecretKeySpec(secretBytes, "HmacSHA256"));
             String computed = Base64.getEncoder().encodeToString(
                     mac.doFinal(signedContent.getBytes(StandardCharsets.UTF_8))
             );

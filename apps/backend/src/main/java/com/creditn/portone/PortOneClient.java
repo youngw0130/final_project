@@ -72,30 +72,51 @@ public class PortOneClient {
         body.set("amount", amountNode);
         body.put("currency", "KRW");
 
-        ObjectNode method = objectMapper.createObjectNode();
-        method.put("type", "VirtualAccount");
-        method.put("bank", "TOSS_BANK");
+        // customer.name (PG 필수)
+        ObjectNode customer = objectMapper.createObjectNode();
+        ObjectNode customerName = objectMapper.createObjectNode();
+        customerName.put("full", "크레딧-N 모임");
+        customer.set("name", customerName);
+        body.set("customer", customer);
+
+        // method.virtualAccount (PortOne V2 구조)
+        ObjectNode vaMethod = objectMapper.createObjectNode();
+        ObjectNode va = objectMapper.createObjectNode();
+        va.put("bank", "SHINHAN");
         ObjectNode expiry = objectMapper.createObjectNode();
         expiry.put("validHours", 72);
-        method.set("expiry", expiry);
-        method.put("remitteeName", "크레딧-N");
-        body.set("method", method);
+        va.set("expiry", expiry);
+        ObjectNode option = objectMapper.createObjectNode();
+        option.put("type", "NORMAL");
+        va.set("option", option);
+        va.put("remitteeName", "크레딧-N");
+        vaMethod.set("virtualAccount", va);
+        body.set("method", vaMethod);
 
         log.info("[PortOne] 가상계좌 발급 요청: paymentId={}, amount={}", paymentId, amount);
 
         try {
-            ResponseEntity<JsonNode> res = restTemplate.exchange(
+            // Step 1: 가상계좌 발급
+            restTemplate.exchange(
                     props.getBaseUrl() + "/payments/" + paymentId + "/instant",
                     HttpMethod.POST,
                     new HttpEntity<>(body.toString(), authHeaders()),
                     JsonNode.class
             );
 
-            JsonNode data = res.getBody();
+            // Step 2: 발급 결과 조회 (instant 응답에 계좌번호 없음, GET으로 조회 필요)
+            ResponseEntity<JsonNode> detailRes = restTemplate.exchange(
+                    props.getBaseUrl() + "/payments/" + paymentId,
+                    HttpMethod.GET,
+                    new HttpEntity<>(authHeaders()),
+                    JsonNode.class
+            );
+
+            JsonNode data = detailRes.getBody();
             if (data == null) throw new PortOneApiException("PortOne 응답이 비어 있습니다.");
 
-            String accountNumber = data.path("virtualAccount").path("accountNumber").asText();
-            String bank          = data.path("virtualAccount").path("bank").asText();
+            String accountNumber = data.path("method").path("accountNumber").asText();
+            String bank          = bankCodeToKorean(data.path("method").path("bank").asText());
 
             log.info("[PortOne] 가상계좌 발급 완료: paymentId={}, bank={}, accountNumber={}",
                     paymentId, bank, accountNumber);
@@ -194,12 +215,12 @@ public class PortOneClient {
         return headers;
     }
 
-    /** 한글 은행명을 PortOne V2 은행 코드로 정규화 */
+    /** 한글 은행명 → PortOne V2 은행 코드 */
     private String normalizeBankCode(String bank) {
         if (bank == null) return "SHINHAN";
         return switch (bank) {
-            case "토스뱅크"  -> "TOSS_BANK";
-            case "카카오뱅크" -> "KAKAO_BANK";
+            case "토스뱅크"  -> "TOSS";
+            case "카카오뱅크" -> "KAKAO";
             case "국민은행"  -> "KOOKMIN";
             case "신한은행"  -> "SHINHAN";
             case "우리은행"  -> "WOORI";
@@ -207,6 +228,22 @@ public class PortOneClient {
             case "농협은행"  -> "NONGHYUP";
             case "기업은행"  -> "IBK";
             default         -> bank;
+        };
+    }
+
+    /** PortOne V2 은행 코드 → 한글 은행명 */
+    private String bankCodeToKorean(String code) {
+        if (code == null) return "신한은행";
+        return switch (code) {
+            case "TOSS"     -> "토스뱅크";
+            case "KAKAO"    -> "카카오뱅크";
+            case "KOOKMIN"  -> "국민은행";
+            case "SHINHAN"  -> "신한은행";
+            case "WOORI"    -> "우리은행";
+            case "HANA"     -> "하나은행";
+            case "NONGHYUP" -> "농협은행";
+            case "IBK"      -> "기업은행";
+            default         -> code;
         };
     }
 

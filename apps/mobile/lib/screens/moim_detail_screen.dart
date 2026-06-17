@@ -39,7 +39,10 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
   Widget build(BuildContext context) {
     final prov = context.watch<MoimProvider>();
     final auth = context.watch<AuthProvider>();
-    final moim = prov.selectedMoim;
+    // selectedMoim이 다른 모임이면 moims 목록에서 fallback 조회
+    final moim = prov.selectedMoim?.id == widget.moimId
+        ? prov.selectedMoim
+        : prov.moims.where((m) => m.id == widget.moimId).firstOrNull;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF0F4FF),

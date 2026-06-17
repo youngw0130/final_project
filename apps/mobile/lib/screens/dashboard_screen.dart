@@ -52,14 +52,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final auth = context.watch<AuthProvider>();
     final moimProv = context.watch<MoimProvider>();
 
-    // 대시보드 상단 카드 = ACTIVE 우선, 없으면 첫 번째 모임
-    final activeMoim = moimProv.moims.isNotEmpty
-        ? (moimProv.moims.firstWhere(
-            (m) => m.status == 'ACTIVE',
-            orElse: () => moimProv.moims.first,
-          ))
-        : null;
+    // 대시보드 상단 카드 = sortedMoims 기준 첫 번째 (ACTIVE > OPEN > 기타 순)
     final allMoims = moimProv.sortedMoims;
+    final activeMoim = allMoims.isNotEmpty ? allMoims.first : null;
     final participants = moimProv.participants;
 
     return Scaffold(

@@ -89,6 +89,7 @@ class MoimProvider extends ChangeNotifier {
     try {
       final moim = await ApiClient.createMoim(data);
       _moims.insert(0, moim);
+      _selectedMoim = moim;
       notifyListeners();
       return moim;
     } catch (e) {

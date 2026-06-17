@@ -50,7 +50,7 @@ public class SettlementService {
      */
     @Transactional
     public List<ParticipantResponse> settle(Long moimId, String username) {
-        Moim moim = moimRepository.findById(moimId)
+        Moim moim = moimRepository.findByIdWithDetails(moimId)
                 .orElseThrow(() -> new IllegalArgumentException("모임을 찾을 수 없습니다."));
 
         // 리더 권한 확인

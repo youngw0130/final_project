@@ -23,28 +23,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<AuthProvider>().refreshProfile();
-      final prov = context.read<MoimProvider>();
-      await prov.loadMyMoims();
-      if (prov.moims.isNotEmpty) {
-        final firstId = prov.moims.first.id;
-        await Future.wait([
-          prov.loadPayments(firstId),
-          prov.loadParticipants(firstId),
-        ]);
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadDashboardData());
   }
 
-  @override
-  void dispose() {
-    _scrollCtrl.dispose();
-    super.dispose();
-  }
-
-  Future<void> _onRefresh() async {
-    await context.read<AuthProvider>().refreshProfile();
+  Future<void> _loadDashboardData() async {
+    context.read<AuthProvider>().refreshProfile();
     final prov = context.read<MoimProvider>();
     await prov.loadMyMoims();
     if (prov.moims.isNotEmpty) {
@@ -55,6 +38,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ]);
     }
   }
+
+  @override
+  void dispose() {
+    _scrollCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onRefresh() => _loadDashboardData();
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             orElse: () => moimProv.moims.first,
           ))
         : null;
-    final allMoims = moimProv.moims;
+    final allMoims = moimProv.sortedMoims;
     final participants = moimProv.participants;
 
     return Scaffold(
@@ -299,7 +290,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Icon(Icons.notifications_outlined,
@@ -337,9 +328,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -361,7 +352,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(gradeName,
@@ -466,7 +457,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Container(
                       height: 8,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -571,10 +562,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   fontWeight: FontWeight.w500)),
           const SizedBox(height: 2),
           GestureDetector(
-            onTap: () async {
-              await Future.delayed(const Duration(milliseconds: 350));
-              if (context.mounted) context.push('/moims/${moim.id}');
-            },
+            onTap: () => context.push('/moims/${moim.id}'),
             child: Text('${moim.emoji ?? '🎉'} ${moim.title}',
                 style: const TextStyle(
                     color: Color(0xFF1F2937),
@@ -869,7 +857,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
@@ -939,7 +927,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(Icons.qr_code_rounded,
@@ -1236,11 +1224,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildOtherGroupsCard(List<MoimResponse> moims) {
-    // 상태별 정렬: ACTIVE → OPEN → SETTLING → CLOSED → CANCELLED
-    final sorted = [...moims]..sort((a, b) {
-        const order = {'ACTIVE': 0, 'OPEN': 1, 'SETTLING': 2, 'CLOSED': 3, 'CANCELLED': 4};
-        return (order[a.status] ?? 9).compareTo(order[b.status] ?? 9);
-      });
+    final sorted = moims;
 
     return Container(
       decoration: BoxDecoration(
@@ -1304,10 +1288,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final isOpen = moim.status == 'OPEN';
 
     return GestureDetector(
-      onTap: () async {
-        await Future.delayed(const Duration(milliseconds: 350));
-        if (context.mounted) context.push('/moims/${moim.id}');
-      },
+      onTap: () => context.push('/moims/${moim.id}'),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(12),
@@ -1319,9 +1300,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   : const Color(0xFFF9FAFB),
           borderRadius: BorderRadius.circular(16),
           border: isActive
-              ? Border.all(color: const Color(0xFF0052FF).withOpacity(0.25))
+              ? Border.all(color: const Color(0xFF0052FF).withValues(alpha: 0.25))
               : isOpen
-                  ? Border.all(color: const Color(0xFF00A864).withOpacity(0.25))
+                  ? Border.all(color: const Color(0xFF00A864).withValues(alpha: 0.25))
                   : null,
         ),
         child: Row(
@@ -1617,7 +1598,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       width: 56,
                       height: 56,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -1649,10 +1630,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: gradeColor.withOpacity(0.25),
+                                  color: gradeColor.withValues(alpha: 0.25),
                                   borderRadius: BorderRadius.circular(999),
                                   border: Border.all(
-                                      color: Colors.white.withOpacity(0.4)),
+                                      color: Colors.white.withValues(alpha: 0.4)),
                                 ),
                                 child: Text(
                                   grade,
@@ -1701,7 +1682,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               width: 44,
                               height: 44,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF0052FF).withOpacity(0.1),
+                                color: const Color(0xFF0052FF).withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(Icons.analytics_outlined,
@@ -1775,7 +1756,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               width: 44,
                               height: 44,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEF4444).withOpacity(0.1),
+                                color: const Color(0xFFEF4444).withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(Icons.logout_rounded,
@@ -1823,7 +1804,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 22),
@@ -1911,7 +1892,7 @@ class _ScoreRingPainter extends CustomPainter {
     final radius = (size.width - strokeWidth) / 2;
 
     final bgPaint = Paint()
-      ..color = Colors.white.withOpacity(0.2)
+      ..color = Colors.white.withValues(alpha: 0.2)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;

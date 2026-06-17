@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
@@ -258,7 +259,8 @@ public class MoimService {
 
     private String generateFallbackAccountNumber() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 12; i++) sb.append((int)(Math.random() * 10));
+        ThreadLocalRandom rng = ThreadLocalRandom.current();
+        for (int i = 0; i < 12; i++) sb.append(rng.nextInt(10));
         return sb.toString();
     }
 

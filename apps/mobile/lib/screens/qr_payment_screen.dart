@@ -137,7 +137,7 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: const Icon(Icons.arrow_back_ios_new_rounded,
@@ -163,7 +163,7 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(Icons.more_vert_rounded,
@@ -181,9 +181,9 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.13),
+          color: Colors.white.withValues(alpha: 0.13),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.15)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
         ),
         child: Row(
           children: [
@@ -191,7 +191,7 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.18),
+                color: Colors.white.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
@@ -283,7 +283,7 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                              color: const Color(0xFF22C55E).withOpacity(0.6),
+                              color: const Color(0xFF22C55E).withValues(alpha: 0.6),
                               blurRadius: 5),
                         ],
                       ),
@@ -340,7 +340,7 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
           decoration: BoxDecoration(
             color: const Color(0xFFF8FAFF),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFF0052FF).withOpacity(0.08)),
+            border: Border.all(color: const Color(0xFF0052FF).withValues(alpha: 0.08)),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(13),
@@ -365,7 +365,7 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
                       gradient: LinearGradient(
                         colors: [
                           Colors.transparent,
-                          const Color(0xFF0052FF).withOpacity(0.7),
+                          const Color(0xFF0052FF).withValues(alpha: 0.7),
                           Colors.transparent,
                         ],
                       ),
@@ -463,9 +463,9 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.12)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
       ),
       child: Column(
         children: [
@@ -475,11 +475,11 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
               Row(
                 children: [
                   Icon(Icons.timer_rounded,
-                      color: Colors.white.withOpacity(0.85), size: 16),
+                      color: Colors.white.withValues(alpha: 0.85), size: 16),
                   const SizedBox(width: 8),
                   Text('보안 코드 만료까지',
                       style: TextStyle(
-                          color: Colors.white.withOpacity(0.75),
+                          color: Colors.white.withValues(alpha: 0.75),
                           fontSize: 12,
                           fontWeight: FontWeight.w500)),
                 ],
@@ -497,14 +497,14 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
             borderRadius: BorderRadius.circular(4),
             child: Container(
               height: 7,
-              color: Colors.white.withOpacity(0.18),
+              color: Colors.white.withValues(alpha: 0.18),
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
                 widthFactor: _timerProgress,
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [_timerColor, _timerColor.withOpacity(0.7)],
+                      colors: [_timerColor, _timerColor.withValues(alpha: 0.7)],
                     ),
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -518,10 +518,10 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
             children: [
               Text('만료',
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.4), fontSize: 11)),
+                      color: Colors.white.withValues(alpha: 0.4), fontSize: 11)),
               Text('3:00',
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.4), fontSize: 11)),
+                      color: Colors.white.withValues(alpha: 0.4), fontSize: 11)),
             ],
           ),
         ],
@@ -538,10 +538,10 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 14),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.16),
+                color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: BorderRadius.circular(16),
                 border:
-                    Border.all(color: Colors.white.withOpacity(0.2)),
+                    Border.all(color: Colors.white.withValues(alpha: 0.2)),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -599,9 +599,9 @@ class _QrPaymentScreenState extends State<QrPaymentScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.18),
+        color: Colors.black.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -62,7 +62,7 @@ class SettlementResultScreen extends StatelessWidget {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
+                              color: Colors.white.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(Icons.arrow_back,
@@ -81,7 +81,7 @@ class SettlementResultScreen extends StatelessWidget {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
+                            color: Colors.white.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(Icons.share_outlined,
@@ -99,15 +99,15 @@ class SettlementResultScreen extends StatelessWidget {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                  color: Colors.white.withOpacity(0.08),
+                                  color: Colors.white.withValues(alpha: 0.08),
                                   blurRadius: 0,
                                   spreadRadius: 12),
                               BoxShadow(
-                                  color: Colors.white.withOpacity(0.04),
+                                  color: Colors.white.withValues(alpha: 0.04),
                                   blurRadius: 0,
                                   spreadRadius: 24),
                             ],
@@ -451,7 +451,7 @@ class SettlementResultScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF00A864).withOpacity(0.1),
+                            color: const Color(0xFF00A864).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
@@ -516,11 +516,11 @@ class SettlementResultScreen extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF00A864).withOpacity(0.1),
+                              color: const Color(0xFF00A864).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                   color: const Color(0xFF00A864)
-                                      .withOpacity(0.3)),
+                                      .withValues(alpha: 0.3)),
                             ),
                             child: const Text('입금 예정',
                                 style: TextStyle(
@@ -562,7 +562,7 @@ class SettlementResultScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                                color: const Color(0xFF0052FF).withOpacity(0.4),
+                                color: const Color(0xFF0052FF).withValues(alpha: 0.4),
                                 width: 2),
                           ),
                           child: Center(
@@ -570,7 +570,7 @@ class SettlementResultScreen extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: const Color(0xFF0052FF)
-                                        .withOpacity(0.55),
+                                        .withValues(alpha: 0.55),
                                     fontSize: 12,
                                     fontWeight: FontWeight.w900)),
                           ),

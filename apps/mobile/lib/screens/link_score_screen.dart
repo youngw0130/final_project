@@ -162,10 +162,10 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                            color: Colors.white.withOpacity(0.15)),
+                            color: Colors.white.withValues(alpha: 0.15)),
                       ),
                       child: const Icon(Icons.arrow_back,
                           color: Colors.white, size: 20),
@@ -190,10 +190,10 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                          color: Colors.white.withOpacity(0.15)),
+                          color: Colors.white.withValues(alpha: 0.15)),
                     ),
                     child: const Icon(Icons.share_outlined,
                         color: Colors.white, size: 18),
@@ -253,7 +253,7 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                          color: _gradeGradient(score).last.withOpacity(0.3),
+                          color: _gradeGradient(score).last.withValues(alpha: 0.3),
                           blurRadius: 14,
                           offset: const Offset(0, 4)),
                     ],
@@ -278,10 +278,10 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00C27A).withOpacity(0.15),
+                    color: const Color(0xFF00C27A).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: const Color(0xFF00C27A).withOpacity(0.3)),
+                        color: const Color(0xFF00C27A).withValues(alpha: 0.3)),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
@@ -308,10 +308,10 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
+                    color: Colors.white.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: Colors.white.withOpacity(0.12)),
+                        color: Colors.white.withValues(alpha: 0.12)),
                   ),
                   child: const Text('상위 12.3%',
                       style: TextStyle(
@@ -361,9 +361,9 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.06),
+          color: Colors.white.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
         ),
         child: Column(
           children: [
@@ -535,7 +535,7 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
                           strokeColor: isLast
                               ? Colors.white
                               : const Color(0xFF0052FF)
-                                  .withOpacity(0.6 + index * 0.08),
+                                  .withValues(alpha: 0.6 + index * 0.08),
                         );
                       },
                     ),
@@ -903,7 +903,7 @@ class _LinkScoreScreenState extends State<LinkScoreScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.12),
+              color: iconColor.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, size: 18, color: iconColor),
@@ -1229,7 +1229,7 @@ class _ScoreRingPainter extends CustomPainter {
       center,
       size.width * 0.465,
       Paint()
-        ..color = Colors.white.withOpacity(0.04)
+        ..color = Colors.white.withValues(alpha: 0.04)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );
@@ -1239,7 +1239,7 @@ class _ScoreRingPainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..color = Colors.white.withOpacity(0.08)
+        ..color = Colors.white.withValues(alpha: 0.08)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 14,
     );
@@ -1262,7 +1262,7 @@ class _ScoreRingPainter extends CustomPainter {
 
     // Tick marks every 10%
     final tickPaint = Paint()
-      ..color = Colors.white.withOpacity(0.15)
+      ..color = Colors.white.withValues(alpha: 0.15)
       ..strokeWidth = 2;
     for (int i = 1; i < 10; i++) {
       final angle = -math.pi / 2 + 2 * math.pi * i / 10;

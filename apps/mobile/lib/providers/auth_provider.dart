@@ -20,12 +20,16 @@ class AuthProvider extends ChangeNotifier {
   bool get initialized => _initialized;
 
   Future<void> initialize() async {
-    _token = await _storage.read(key: 'jwt_token');
-    final uid = await _storage.read(key: 'user_id');
-    _userId = uid != null ? int.tryParse(uid) : null;
-    _username = await _storage.read(key: 'username');
-    final ls = await _storage.read(key: 'link_score');
-    _linkScore = ls != null ? int.tryParse(ls) ?? 0 : 0;
+    final results = await Future.wait([
+      _storage.read(key: 'jwt_token'),
+      _storage.read(key: 'user_id'),
+      _storage.read(key: 'username'),
+      _storage.read(key: 'link_score'),
+    ]);
+    _token = results[0];
+    _userId = results[1] != null ? int.tryParse(results[1]!) : null;
+    _username = results[2];
+    _linkScore = results[3] != null ? int.tryParse(results[3]!) ?? 0 : 0;
     _initialized = true;
     notifyListeners();
   }
@@ -35,10 +39,13 @@ class AuthProvider extends ChangeNotifier {
     _userId = auth.userId;
     _username = auth.username;
     _linkScore = auth.linkScore;
-    await _storage.write(key: 'jwt_token', value: auth.token);
-    await _storage.write(key: 'user_id', value: '${auth.userId}');
-    await _storage.write(key: 'username', value: auth.username);
-    await _storage.write(key: 'link_score', value: '${auth.linkScore}');
+    ApiClient.setTokenCache(auth.token);
+    await Future.wait([
+      _storage.write(key: 'jwt_token', value: auth.token),
+      _storage.write(key: 'user_id', value: '${auth.userId}'),
+      _storage.write(key: 'username', value: auth.username),
+      _storage.write(key: 'link_score', value: '${auth.linkScore}'),
+    ]);
     notifyListeners();
   }
 
@@ -84,6 +91,7 @@ class AuthProvider extends ChangeNotifier {
     _userId = null;
     _username = null;
     _linkScore = 0;
+    ApiClient.setTokenCache(null);
     await _storage.deleteAll();
     notifyListeners();
   }

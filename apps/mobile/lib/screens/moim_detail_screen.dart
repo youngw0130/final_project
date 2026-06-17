@@ -137,7 +137,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(Icons.arrow_back_ios_new,
@@ -216,7 +216,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(Icons.more_vert,
@@ -233,7 +233,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
+                      color: Colors.white.withValues(alpha: 0.25),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Center(
@@ -277,7 +277,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -820,8 +820,8 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
             height: 36,
             decoration: BoxDecoration(
               color: isPaid
-                  ? const Color(0xFF00A864).withOpacity(0.15)
-                  : const Color(0xFFD97706).withOpacity(0.15),
+                  ? const Color(0xFF00A864).withValues(alpha: 0.15)
+                  : const Color(0xFFD97706).withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -877,10 +877,10 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD97706).withOpacity(0.15),
+                  color: const Color(0xFFD97706).withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                   border:
-                      Border.all(color: const Color(0xFFD97706).withOpacity(0.4)),
+                      Border.all(color: const Color(0xFFD97706).withValues(alpha: 0.4)),
                 ),
                 child: const Text('입금 요청',
                     style: TextStyle(
@@ -1561,7 +1561,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.25),
+        color: Colors.white.withValues(alpha: 0.25),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(labels[status] ?? status,
@@ -1591,7 +1591,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: c.withOpacity(0.12),
+        color: c.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(labels[status] ?? status,
@@ -1607,7 +1607,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
           width: 28,
           height: 28,
           decoration: BoxDecoration(
-            color: const Color(0xFF00A864).withOpacity(0.15),
+            color: const Color(0xFF00A864).withValues(alpha: 0.15),
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.check,
@@ -1618,7 +1618,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
           width: 28,
           height: 28,
           decoration: BoxDecoration(
-            color: const Color(0xFFEF4444).withOpacity(0.15),
+            color: const Color(0xFFEF4444).withValues(alpha: 0.15),
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.warning_amber,
@@ -1629,7 +1629,7 @@ class _MoimDetailScreenState extends State<MoimDetailScreen> {
           width: 28,
           height: 28,
           decoration: BoxDecoration(
-            color: const Color(0xFF0052FF).withOpacity(0.15),
+            color: const Color(0xFF0052FF).withValues(alpha: 0.15),
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.undo,
@@ -1663,7 +1663,7 @@ class _DonutGaugePainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..color = Colors.white.withOpacity(0.2)
+        ..color = Colors.white.withValues(alpha: 0.2)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 7,
     );

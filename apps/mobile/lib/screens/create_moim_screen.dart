@@ -152,7 +152,7 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: const Icon(Icons.arrow_back_ios_new_rounded,
@@ -176,7 +176,7 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: const Icon(Icons.help_outline_rounded,
@@ -194,14 +194,14 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
                 width: 32,
                 height: 1,
                 margin: const EdgeInsets.symmetric(horizontal: 8),
-                color: Colors.white.withOpacity(0.35),
+                color: Colors.white.withValues(alpha: 0.35),
               ),
               _stepDot(2, '에스크로', false),
               Container(
                 width: 32,
                 height: 1,
                 margin: const EdgeInsets.symmetric(horizontal: 8),
-                color: Colors.white.withOpacity(0.35),
+                color: Colors.white.withValues(alpha: 0.35),
               ),
               _stepDot(3, '초대', false),
             ],
@@ -218,7 +218,7 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
           width: 24,
           height: 24,
           decoration: BoxDecoration(
-            color: active ? Colors.white : Colors.white.withOpacity(0.25),
+            color: active ? Colors.white : Colors.white.withValues(alpha: 0.25),
             shape: BoxShape.circle,
           ),
           child: Center(
@@ -236,7 +236,7 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
             style: TextStyle(
                 color: active
                     ? Colors.white
-                    : Colors.white.withOpacity(0.7),
+                    : Colors.white.withValues(alpha: 0.7),
                 fontSize: 12,
                 fontWeight:
                     active ? FontWeight.w600 : FontWeight.normal)),
@@ -614,7 +614,7 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
                         ? '+${_fmt.format((_depositPerPerson * _participantCount * _bufferRate).toInt())}원'
                         : '—'),
                 Divider(
-                    color: const Color(0xFFBFD7FF).withOpacity(0.5),
+                    color: const Color(0xFFBFD7FF).withValues(alpha: 0.5),
                     height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -674,7 +674,7 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
               Text(sub,
                   style: TextStyle(
                       color: sel
-                          ? Colors.white.withOpacity(0.8)
+                          ? Colors.white.withValues(alpha: 0.8)
                           : const Color(0xFF9CA3AF),
                       fontSize: 10)),
             ],
@@ -710,7 +710,7 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
               Text('입력',
                   style: TextStyle(
                       color: sel
-                          ? Colors.white.withOpacity(0.8)
+                          ? Colors.white.withValues(alpha: 0.8)
                           : const Color(0xFF9CA3AF),
                       fontSize: 10)),
             ],
@@ -1127,7 +1127,7 @@ class _CreateMoimScreenState extends State<CreateMoimScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF00A864).withOpacity(0.1),
+        color: const Color(0xFF00A864).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(

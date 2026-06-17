@@ -17,7 +17,14 @@ class ApiClient {
   static const _timeout = Duration(seconds: 15);
   static const _warmTimeout = Duration(seconds: 60);
 
-  static Future<String?> _getToken() => _storage.read(key: 'jwt_token');
+  static String? _tokenCache;
+
+  static void setTokenCache(String? token) => _tokenCache = token;
+
+  static Future<String?> _getToken() async {
+    _tokenCache ??= await _storage.read(key: 'jwt_token');
+    return _tokenCache;
+  }
 
   static Future<Map<String, String>> _authHeaders() async {
     final token = await _getToken();
@@ -224,11 +231,15 @@ class ApiClient {
     } catch (_) {}
   }
 
-  static Future<void> saveToken(String token) =>
-      _storage.write(key: 'jwt_token', value: token);
+  static Future<void> saveToken(String token) async {
+    _tokenCache = token;
+    await _storage.write(key: 'jwt_token', value: token);
+  }
 
-  static Future<void> deleteToken() =>
-      _storage.delete(key: 'jwt_token');
+  static Future<void> deleteToken() async {
+    _tokenCache = null;
+    await _storage.delete(key: 'jwt_token');
+  }
 }
 
 class ApiException implements Exception {

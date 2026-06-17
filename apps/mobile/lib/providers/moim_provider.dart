@@ -13,6 +13,14 @@ class MoimProvider extends ChangeNotifier {
   String? _error;
 
   List<MoimResponse> get moims => _moims;
+
+  static const _statusOrder = {'ACTIVE': 0, 'OPEN': 1, 'SETTLING': 2, 'CLOSED': 3, 'CANCELLED': 4};
+  List<MoimResponse> get sortedMoims {
+    final sorted = [..._moims];
+    sorted.sort((a, b) => (_statusOrder[a.status] ?? 9).compareTo(_statusOrder[b.status] ?? 9));
+    return sorted;
+  }
+
   MoimResponse? get selectedMoim => _selectedMoim;
   List<ParticipantResponse> get participants => _participants;
   List<PaymentResponse> get payments => _payments;

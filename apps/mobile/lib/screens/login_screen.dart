@@ -44,6 +44,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.message)));
       }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('서버에 연결할 수 없습니다. 네트워크를 확인해주세요.')),
+        );
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }

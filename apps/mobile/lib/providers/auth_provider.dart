@@ -30,22 +30,27 @@ class AuthProvider extends ChangeNotifier {
     _userId = results[1] != null ? int.tryParse(results[1]!) : null;
     _username = results[2];
     _linkScore = results[3] != null ? int.tryParse(results[3]!) ?? 0 : 0;
-
-    if (_token != null) {
-      ApiClient.setTokenCache(_token);
-      try {
-        final profile = await ApiClient.getMyProfile();
-        _linkScore = (profile['linkScore'] as num).toInt();
-        _username = profile['username'] as String? ?? _username;
-        await _storage.write(key: 'link_score', value: '$_linkScore');
-      } catch (_) {
-        // 토큰이 만료됐거나 유효하지 않으면 로그아웃 처리
-        await _clearAuth();
-      }
-    }
-
     _initialized = true;
     notifyListeners();
+
+    // 앱 렌더링을 막지 않고 백그라운드에서 토큰 유효성 검증
+    if (_token != null) {
+      ApiClient.setTokenCache(_token);
+      _validateTokenInBackground();
+    }
+  }
+
+  void _validateTokenInBackground() {
+    ApiClient.getMyProfile().then((profile) {
+      _linkScore = (profile['linkScore'] as num).toInt();
+      _username = profile['username'] as String? ?? _username;
+      _storage.write(key: 'link_score', value: '$_linkScore');
+      notifyListeners();
+    }).catchError((_) async {
+      // 토큰 만료/불일치 시 자동 로그아웃
+      await _clearAuth();
+      notifyListeners();
+    });
   }
 
   Future<void> _clearAuth() async {

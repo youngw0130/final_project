@@ -30,8 +30,31 @@ class AuthProvider extends ChangeNotifier {
     _userId = results[1] != null ? int.tryParse(results[1]!) : null;
     _username = results[2];
     _linkScore = results[3] != null ? int.tryParse(results[3]!) ?? 0 : 0;
+
+    if (_token != null) {
+      ApiClient.setTokenCache(_token);
+      try {
+        final profile = await ApiClient.getMyProfile();
+        _linkScore = (profile['linkScore'] as num).toInt();
+        _username = profile['username'] as String? ?? _username;
+        await _storage.write(key: 'link_score', value: '$_linkScore');
+      } catch (_) {
+        // 토큰이 만료됐거나 유효하지 않으면 로그아웃 처리
+        await _clearAuth();
+      }
+    }
+
     _initialized = true;
     notifyListeners();
+  }
+
+  Future<void> _clearAuth() async {
+    _token = null;
+    _userId = null;
+    _username = null;
+    _linkScore = 0;
+    ApiClient.setTokenCache(null);
+    await _storage.deleteAll();
   }
 
   Future<void> _saveAuth(AuthResponse auth) async {
@@ -87,12 +110,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    _token = null;
-    _userId = null;
-    _username = null;
-    _linkScore = 0;
-    ApiClient.setTokenCache(null);
-    await _storage.deleteAll();
+    await _clearAuth();
     notifyListeners();
   }
 }
